@@ -1,7 +1,8 @@
 local input = [[
 Choose a convert option number
 ]] .. "\n\n1. Convert F into Celsius \n"
-    .. "2. Convert C into Fahrenheit\n\n"
+    .. "2. Convert C into Fahrenheit\n"
+    .. "3. Convert K into C\n"
     .. "Enter your option: "
 io.write(input)
 local option = io.read("*number")
@@ -17,6 +18,12 @@ elseif option == 2 then
     local f = c * 9 / 5 + 32
     local formatted_result = string.format("%.4f", f)
     print("Fahrenheit: " .. formatted_result)
+elseif option == 3 then
+    io.write("Enter Kelvin: ")
+    local k = io.read("*number")
+    local c = k - 273.15
+    local formatted_result = string.format("%.4f", c)
+    print("Celsius: " .. formatted_result)
 else
     print("Invalid option")
 end
