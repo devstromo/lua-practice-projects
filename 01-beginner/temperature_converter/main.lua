@@ -1,4 +1,9 @@
-io.write("Choose a convert option number\n\n1. Convert F into Celsius \n2. Convert C into Fahrenheit\n\n")
+local input = [[
+Choose a convert option number
+]] .. "\n\n1. Convert F into Celsius \n"
+    .. "2. Convert C into Fahrenheit\n\n"
+    .. "Enter your option: "
+io.write(input)
 local option = io.read("*number")
 if option == 1 then
     io.write("Enter Fahrenheit: ")
