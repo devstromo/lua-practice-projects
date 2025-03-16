@@ -1,8 +1,17 @@
+local sequential = io.open("sequence.txt", "r")
+if sequential == nil then
+    local file = io.open("sequence.txt", "a")
+    if file ~= nil then
+        file:write(1)
+        file:close()
+    end
+end
 local input = [[
 Welcome back to the basic to do list, what would you like to do?
 ]] .. "\n\n1. Add a new task \n"
     .. "2. List my tasks\n"
 io.write(input)
+
 local option = io.read("*number")
 io.read() -- This consumes the leftover newline
 if option == 1 then
