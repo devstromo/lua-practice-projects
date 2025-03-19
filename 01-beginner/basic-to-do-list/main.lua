@@ -81,12 +81,59 @@ local function update_task(task_number, new_description)
     end
 
     file = io.open("tasks.txt", "w")
+    if file == nil then
+        return
+    end
     for _, task in ipairs(tasks) do
         file:write(task .. "\n")
     end
     file:close()
 
     print("Task " .. task_number .. " updated successfully!")
+end
+
+local function delete_task(task_number)
+    local file = io.open("tasks.txt", "r")
+    if not file then
+        print("Error: tasks.txt not found.")
+        return
+    end
+
+    local tasks = {}
+    local task_found = false
+
+    for line in file:lines() do
+        local num, task = line:match("(%d+)%.%s(.+)")
+        if tonumber(num) == task_number then
+            task_found = true
+        else
+            table.insert(tasks, task)
+        end
+    end
+
+    file:close()
+
+    if not task_found then
+        print("Task number " .. task_number .. " not found.")
+        return
+    end
+
+    file = io.open("tasks.txt", "w")
+    if not file then
+        print("Error: Could not open tasks.txt for writing.")
+        return
+    end
+
+    for i, task in ipairs(tasks) do
+        file:write(i .. ". " .. task .. "\n") -- Reassign numbers sequentially
+    end
+
+    file:close()
+
+    local new_sequence = #tasks + 1
+    update_sequence_number(new_sequence)
+
+    print("Task " .. task_number .. " deleted and numbers updated successfully!")
 end
 
 -- MAIN
@@ -96,7 +143,8 @@ Welcome back to the basic to-do list, what would you like to do?
 2. List my tasks
 3. Get task by number
 4. Update task
-5. Exit
+5. Delete task
+6. Exit
 ]]
 io.write(input)
 
@@ -137,6 +185,10 @@ elseif option == 4 then
     local description = io.read()
     update_task(task_number, description)
 elseif option == 5 then
+    io.write("Enter the task number: ")
+    local task_number = io.read("*number")
+    delete_task(task_number)
+elseif option == 6 then
     print("Goodbye!")
     os.exit(0)
 else
