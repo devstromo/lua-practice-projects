@@ -34,11 +34,32 @@ local function add_task()
     end
 end
 
+local function get_task_by_number(task_number)
+    local file = io.open("tasks.txt", "r")
+    if not file then
+        print("Error: tasks.txt not found.")
+        return
+    end
+
+    for line in file:lines() do
+        local num, task = line:match("(%d+)%.%s(.+)")
+        if tonumber(num) == task_number then
+            file:close()
+            return task
+        end
+    end
+
+    file:close()
+    return nil
+end
+
+-- MAIN
 local input = [[
 Welcome back to the basic to-do list, what would you like to do?
 1. Add a new task
 2. List my tasks
-3. Exit
+3. Get task by number
+4. Exit
 ]]
 io.write(input)
 
@@ -58,6 +79,15 @@ elseif option == 2 then
         print("No tasks found")
     end
 elseif option == 3 then
+    io.write("Enter the task number: ")
+    local task_number = io.read("*number")
+    local task = get_task_by_number(task_number)
+    if task then
+        print("Task [" .. task_number .. "]: " .. task)
+    else
+        print("Task not found")
+    end
+elseif option == 4 then
     print("Goodbye!")
     os.exit(0)
 else
