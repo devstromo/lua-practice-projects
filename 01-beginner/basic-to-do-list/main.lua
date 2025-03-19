@@ -53,13 +53,50 @@ local function get_task_by_number(task_number)
     return nil
 end
 
+local function update_task(task_number, new_description)
+    local file = io.open("tasks.txt", "r")
+    if not file then
+        print("Error: tasks.txt not found.")
+        return
+    end
+
+    local tasks = {}
+    local task_found = false
+
+    for line in file:lines() do
+        local num, task = line:match("(%d+)%.%s(.+)")
+        if tonumber(num) == task_number then
+            table.insert(tasks, num .. ". " .. new_description)
+            task_found = true
+        else
+            table.insert(tasks, line)
+        end
+    end
+
+    file:close()
+
+    if not task_found then
+        print("Task number " .. task_number .. " not found.")
+        return
+    end
+
+    file = io.open("tasks.txt", "w")
+    for _, task in ipairs(tasks) do
+        file:write(task .. "\n")
+    end
+    file:close()
+
+    print("Task " .. task_number .. " updated successfully!")
+end
+
 -- MAIN
 local input = [[
 Welcome back to the basic to-do list, what would you like to do?
 1. Add a new task
 2. List my tasks
 3. Get task by number
-4. Exit
+4. Update task
+5. Exit
 ]]
 io.write(input)
 
@@ -88,6 +125,18 @@ elseif option == 3 then
         print("Task not found")
     end
 elseif option == 4 then
+    print("Update task")
+    local task_number = io.read("*number")
+    local task = get_task_by_number(task_number)
+    if task == nil then
+        print("Task not found")
+        return
+    end
+    io.write("Enter your task: ")
+    io.read()
+    local description = io.read()
+    update_task(task_number, description)
+elseif option == 5 then
     print("Goodbye!")
     os.exit(0)
 else
