@@ -1,11 +1,34 @@
+local lfs = require("lfs")
+
 local function isValidPath(path)
-    local file = io.open(path, "r")
-    if file then
-        file:close()
-        return true
-    else
-        return false
+    local attr = lfs.attributes(path)
+    return attr ~= nil
+end
+
+
+local function scan_folder(path, extension, max_depth, current_depth)
+    current_depth = current_depth or 0
+    if current_depth > max_depth then return {} end
+
+    local results = {}
+
+    for item in lfs.dir(path) do
+        if item ~= "." and item ~= ".." then
+            local full_path = path .. "/" .. item
+            local attr = lfs.attributes(full_path)
+
+            if attr.mode == "file" and full_path:match("%." .. extension .. "$") then
+                table.insert(results, full_path)
+            elseif attr.mode == "directory" then
+                local sub_results = scan_folder(full_path, extension, max_depth, current_depth + 1)
+                for _, v in ipairs(sub_results) do
+                    table.insert(results, v)
+                end
+            end
+        end
     end
+
+    return results
 end
 
 -- MAIN
@@ -38,6 +61,16 @@ if option == 1 then
     else
         print("Destination path is invalid.")
         return
+    end
+    local folder_path = "."
+    local file_type = "txt"
+    local max_depth = 2
+
+    local files = scan_folder(sourcePath, file_type, max_depth)
+
+    print("Found " .. #files .. " ." .. file_type .. " files:")
+    for _, file in ipairs(files) do
+        print(file)
     end
 elseif option == 2 then
     print("Help")
