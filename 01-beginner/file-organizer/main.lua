@@ -11,6 +11,12 @@ local option = io.read("*number")
 local _ = io.read() -- Consume newline
 if option == 1 then
     print("Organize files")
+    io.write("Enter the source path: ")
+    local sourcePath = io.input():read()
+    io.write("Enter the destination path: ")
+    local destinationPath = io.input():read()
+    print("Source path: " .. sourcePath)
+    print("Destination path: " .. destinationPath)
 elseif option == 2 then
     print("Help")
 elseif option == 3 then
