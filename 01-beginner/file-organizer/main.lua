@@ -31,6 +31,31 @@ local function scan_folder(path, extension, max_depth, current_depth)
     return results
 end
 
+local function move_files(files, output_folder)
+    local attr = lfs.attributes(output_folder)
+    if not attr then
+        lfs.mkdir(output_folder)
+    end
+
+    for _, file in ipairs(files) do
+        local filename = file:match("([^/\\]+)$")
+        local destination = output_folder .. "/" .. filename
+
+        local success, err = os.rename(file, destination)
+        if success then
+            print("Moved:", file, "→", destination)
+        else
+            print("Failed to move:", file, "Error:", err)
+        end
+    end
+end
+
+local map = {
+    ["txt"] = "Documents",
+    ["doc"] = "Documents",
+    ["mp4"] = "Media"
+}
+
 -- MAIN
 local input = [[
 Welcome to the basic file organizer, what would you like to do?
