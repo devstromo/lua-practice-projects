@@ -98,7 +98,8 @@ repeat
         for _, file in ipairs(files) do
             print(file)
         end
-        move_files(files, destinationPath)
+        local destinationPathOutput = destinationPath .. "/" .. map[file_type]
+        move_files(files, destinationPathOutput)
     elseif option == 2 then
         print("Help\n")
     elseif option == 3 then
