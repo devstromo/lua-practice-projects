@@ -98,6 +98,7 @@ repeat
         for _, file in ipairs(files) do
             print(file)
         end
+        move_files(files, destinationPath)
     elseif option == 2 then
         print("Help\n")
     elseif option == 3 then
