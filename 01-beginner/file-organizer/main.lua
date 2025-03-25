@@ -50,11 +50,21 @@ local function move_files(files, output_folder)
     end
 end
 
+local function get_keys(tbl)
+    local keys = {}
+    for key, _ in pairs(tbl) do
+        table.insert(keys, key)
+    end
+    return keys
+end
+
 local map = {
     ["txt"] = "Documents",
     ["doc"] = "Documents",
     ["mp4"] = "Media"
 }
+
+local keys = get_keys(map)
 
 -- MAIN
 local input = [[
