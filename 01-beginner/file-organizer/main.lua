@@ -149,14 +149,23 @@ repeat
         local max_depth = 2
 
         for _, file_type in ipairs(keys) do
-            local files = scan_folder(sourcePath, file_type, max_depth)
-
-            print("Found " .. #files .. " ." .. file_type .. " files:")
-            for _, file in ipairs(files) do
-                print(file)
+            local destination_folder = map[file_type]
+            if destination_folder then
+                local destination_path = destinationPath .. "/" .. destination_folder
+                local files = scan_folder(sourcePath, file_type, max_depth)
+        
+                if #files > 0 then
+                    print(string.format("Found %d .%s file(s):", #files, file_type))
+                    for _, file in ipairs(files) do
+                        print("  → " .. file)
+                    end
+                    move_files(files, destination_path)
+                else
+                    print("No ." .. file_type .. " files found.")
+                end
+            else
+                print("Warning: No destination folder mapped for file type: " .. file_type)
             end
-            local destinationPathOutput = destinationPath .. "/" .. map[file_type]
-            move_files(files, destinationPathOutput)
         end
     elseif option == 2 then
         print("Help\n")
