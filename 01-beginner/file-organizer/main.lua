@@ -59,9 +59,56 @@ local function get_keys(tbl)
 end
 
 local map = {
-    ["txt"] = "Documents",
-    ["doc"] = "Documents",
-    ["mp4"] = "Media"
+    -- Documents
+    ["txt"]  = "Documents",
+    ["doc"]  = "Documents",
+    ["pdf"]  = "Documents",
+    ["xlsx"] = "Documents",
+
+    -- Music
+    ["mp3"]  = "Music",
+    ["flac"] = "Music",
+    ["wav"]  = "Music",
+    ["ogg"]  = "Music",
+    ["m4a"]  = "Music",
+    ["wma"]  = "Music",
+    ["aac"]  = "Music",
+
+    -- Video
+    ["mp4"]    = "Video",
+    ["avi"]    = "Video",
+    ["mkv"]    = "Video",
+    ["mov"]    = "Video",
+    ["wmv"]    = "Video",
+    ["webm"]   = "Video",
+    ["3gp"]    = "Video",
+    ["mpeg"]   = "Video",
+    ["mpg"]    = "Video",
+    ["m4v"]    = "Video",
+    ["m2ts"]   = "Video",
+    ["ts"]     = "Video",
+    ["vob"]    = "Video",
+    ["divx"]   = "Video",
+    ["xvid"]   = "Video",
+    ["rm"]     = "Video",
+    ["rmvb"]   = "Video",
+    ["asf"]    = "Video",
+    ["ogv"]    = "Video",
+    ["3g2"]    = "Video",
+    ["f4v"]    = "Video",
+    ["h264"]   = "Video",
+    ["h265"]   = "Video",
+    ["hevc"]   = "Video",
+    ["flv"]    = "Video",
+    ["swf"]    = "Video",
+
+    -- Image
+    ["png"] = "Image",
+    ["jpg"] = "Image",
+    ["jpeg"] = "Image",
+    ["gif"] = "Image",
+    ["bmp"] = "Image",
+    ["svg"] = "Image",
 }
 
 local keys = get_keys(map)
