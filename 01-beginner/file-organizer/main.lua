@@ -65,6 +65,7 @@ local map = {
 }
 
 local keys = get_keys(map)
+print("Map keys:")
 
 -- MAIN
 local input = [[
@@ -98,18 +99,18 @@ repeat
             print("Destination path is invalid.")
             return
         end
-        local folder_path = "."
-        local file_type = "txt"
         local max_depth = 2
 
-        local files = scan_folder(sourcePath, file_type, max_depth)
+        for _, file_type in ipairs(keys) do
+            local files = scan_folder(sourcePath, file_type, max_depth)
 
-        print("Found " .. #files .. " ." .. file_type .. " files:")
-        for _, file in ipairs(files) do
-            print(file)
+            print("Found " .. #files .. " ." .. file_type .. " files:")
+            for _, file in ipairs(files) do
+                print(file)
+            end
+            local destinationPathOutput = destinationPath .. "/" .. map[file_type]
+            move_files(files, destinationPathOutput)
         end
-        local destinationPathOutput = destinationPath .. "/" .. map[file_type]
-        move_files(files, destinationPathOutput)
     elseif option == 2 then
         print("Help\n")
     elseif option == 3 then
