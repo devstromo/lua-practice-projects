@@ -153,7 +153,7 @@ repeat
             if destination_folder then
                 local destination_path = destinationPath .. "/" .. destination_folder
                 local files = scan_folder(sourcePath, file_type, max_depth)
-        
+
                 if #files > 0 then
                     print(string.format("Found %d .%s file(s):", #files, file_type))
                     for _, file in ipairs(files) do
