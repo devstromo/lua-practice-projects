@@ -7,8 +7,8 @@ local function sleep(seconds_to_wait)
     end
 end
 
-local function draw_progress_bar(elapsed, total, bar_length)
-    local percent = elapsed / total
+local function draw_progress_bar(current, total, bar_length)
+    local percent = current / total
     local filled = math.floor(percent * bar_length)
     local empty = bar_length - filled
     local bar = "<" .. string.rep("=", filled) .. string.rep("-", empty) .. ">"
@@ -34,8 +34,9 @@ repeat
         local countdown_time = io.read("*number")
         if countdown_time and countdown_time > 0 then
             sleep(1)
-            for i = countdown_time, 1, -1 do
-                local bar = draw_progress_bar(countdown_time - i, countdown_time, 20)
+            for i = countdown_time, 0, -1 do
+                local elapsed = countdown_time - i
+                local bar = draw_progress_bar(elapsed, countdown_time, 20)
                 io.write("\r" .. bar .. " Countdown: " .. i .. "   ") -- "\r" brings cursor back
                 io.flush() -- ensures output appears immediately
                 sleep(1)
