@@ -19,11 +19,11 @@ repeat
     io.write(input)
 
     local option = io.read("*number")
-    local _ = io.read() -- Consume newline
+    local _ = io.read()
     if option == 1 then
         print("Starting countdown...")
         io.write("Enter the countdown time in seconds: ")
-        local countdown_time = io.input():read("*number")
+        local countdown_time = io.read("*number")
         if countdown_time and countdown_time > 0 then
             sleep(1)
             for i = countdown_time, 1, -1 do
@@ -41,4 +41,4 @@ repeat
     else
         print("Invalid option. Please try again.")
     end
-until option == 3 or option == nil -- Exit on option 3 or invalid input
+until option == 3 or option == nil
