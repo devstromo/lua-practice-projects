@@ -27,7 +27,8 @@ repeat
         if countdown_time and countdown_time > 0 then
             sleep(1)
             for i = countdown_time, 1, -1 do
-                print(i)
+                io.write("\rCountdown: " .. i .. "   ")  -- "\r" brings cursor back
+                io.flush() -- ensures output appears immediately
                 sleep(1)
             end
             print("Time's up!")
