@@ -38,7 +38,7 @@ repeat
                 local elapsed = countdown_time - i
                 local bar = draw_progress_bar(elapsed, countdown_time, 20)
                 io.write("\r" .. bar .. " Countdown: " .. i .. "   ") -- "\r" brings cursor back
-                io.flush() -- ensures output appears immediately
+                io.flush()                                            -- ensures output appears immediately
                 sleep(1)
             end
             print("\nTime's up!")
@@ -46,7 +46,18 @@ repeat
             print("Invalid input. Please enter a positive number.")
         end
     elseif option == 2 then
-        print("Help\n")
+        print("\n=== Help ===")
+        print("1. Start Countdown:")
+        print("   - Choose option 1 to start a countdown.")
+        print("   - You will be asked to enter the time in seconds.")
+        print("   - A progress bar and countdown will appear.")
+        print("   - When it reaches 0, you'll see 'Time's up!'\n")
+
+        print("2. Help:")
+        print("   - Displays this message to explain how the timer works.\n")
+
+        print("3. Exit:")
+        print("   - Choose option 3 to exit the application.\n")
     elseif option == 3 then
         print("Exit\n")
     else
