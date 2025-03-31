@@ -7,6 +7,14 @@ local function sleep(seconds_to_wait)
     end
 end
 
+local function draw_progress_bar(elapsed, total, bar_length)
+    local percent = elapsed / total
+    local filled = math.floor(percent * bar_length)
+    local empty = bar_length - filled
+    local bar = "<" .. string.rep("=", filled) .. string.rep("-", empty) .. ">"
+    return bar
+end
+
 -- MAIN
 local input = [[
 Welcome to the countdown timer, what would you like to do?
@@ -27,11 +35,12 @@ repeat
         if countdown_time and countdown_time > 0 then
             sleep(1)
             for i = countdown_time, 1, -1 do
-                io.write("\rCountdown: " .. i .. "   ")  -- "\r" brings cursor back
+                local bar = draw_progress_bar(countdown_time - i, countdown_time, 20)
+                io.write("\r" .. bar .. " Countdown: " .. i .. "   ") -- "\r" brings cursor back
                 io.flush() -- ensures output appears immediately
                 sleep(1)
             end
-            print("Time's up!")
+            print("\nTime's up!")
         else
             print("Invalid input. Please enter a positive number.")
         end
