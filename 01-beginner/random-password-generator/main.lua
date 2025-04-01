@@ -15,6 +15,11 @@ repeat
     local _ = io.read()
     if option == 1 then
         print("Generating password...")
+        io.write("Enter the desired password length (default is " .. password_length .. "): ")
+        local input_length = io.read("*number")
+        if input_length and input_length > 0 & input_length < 100 then
+            password_length = input_length
+        end
         password = ""
         for i = 1, password_length do
             local random_index = math.random(1, #password_characters)
