@@ -17,7 +17,9 @@ repeat
         print("Generating password...")
         io.write("Enter the desired password length (default is " .. password_length .. "): ")
         local input_length = io.read("*number")
-        if input_length and input_length > 0 & input_length < 100 then
+        if ~input_length or (input_length < 0 & input_length > 100) then
+            io.write("Invalid input. Using default length of " .. password_length .. ".\n")
+        elseif input_length and input_length > 0 & input_length < 100 then
             password_length = input_length
         end
         password = ""
