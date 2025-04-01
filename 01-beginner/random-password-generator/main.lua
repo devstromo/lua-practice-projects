@@ -10,10 +10,17 @@ local password_characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXY
 local password = ""
 
 repeat
+    io.write(input)
     local option = io.read("*number")
     local _ = io.read()
     if option == 1 then
         print("Generating password...")
+        password = ""
+        for i = 1, password_length do
+            local random_index = math.random(1, #password_characters)
+            password = password .. password_characters:sub(random_index, random_index)
+        end
+        print("Generated password: " .. password)
     elseif option == 2 then
         print("\n=== Help ===")
         print("1. Generate Password:")
