@@ -1,4 +1,10 @@
-
+local function complex_sqrt(x)
+    if x >= 0 then
+        return math.sqrt(x)
+    else
+        return { re = 0, im = math.sqrt(-x) }
+    end
+end
 
 -- MAIN
 
@@ -57,16 +63,16 @@ repeat
         io.write("Enter exponent: ")
         local exponent = io.read("*number")
         print("Result: " .. (base ^ exponent))
-
     elseif option == 6 then
         print("Square Root")
         io.write("Enter number: ")
         local num = io.read("*number")
-        if num < 0 then
-            print("Error: Cannot calculate square root of a negative number.")
+        local result = complex_sqrt(num)
+        if type(result) == "table" then
+            print(string.format("sqrt(%d) = %.4f + %.4fi", num, result.re, result.im))
         else
-            print("Result: " .. math.sqrt(num))
-        end    
+            print(string.format("sqrt(%d) = %.4f", num, result))
+        end
     elseif option == 7 then
         print("\n=== Help ===")
         print("1. Add:")
@@ -100,5 +106,4 @@ repeat
     else
         print("Invalid option. Please try again.")
     end
-    
 until option == 8 or option == nil
