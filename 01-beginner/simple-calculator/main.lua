@@ -8,8 +8,9 @@ Welcome to the simple calculator, what would you like to do?
 2. Subtract
 3. Multiply
 4. Divide
-5. Help
-6. Exit
+5. Power
+6. Help
+7. Exit
 ]]
 
 repeat
@@ -49,6 +50,13 @@ repeat
             print("Result: " .. (num1 / num2))
         end
     elseif option == 5 then
+        print("Power")
+        io.write("Enter base: ")
+        local base = io.read("*number")
+        io.write("Enter exponent: ")
+        local exponent = io.read("*number")
+        print("Result: " .. (base ^ exponent))
+    elseif option == 6 then
         print("\n=== Help ===")
         print("1. Add:")
         print("   - Choose option 1 to add two numbers.")
@@ -67,15 +75,19 @@ repeat
         print("   - You will be asked to enter the two numbers.")
         print("   - Division by zero is not allowed.\n")
 
-        print("5. Help:")
+        print("5. Power:")
+        print("   - Choose option 5 to raise a number to the power of another.")
+        print("   - You will be asked to enter the base and the exponent.\n")
+
+        print("6. Help:")
         print("   - Displays this message to explain how the calculator works.\n")
 
-        print("6. Exit:")
-        print("   - Choose option 6 to exit the application.\n")
-    elseif option == 6 then
+        print("7. Exit:")
+        print("   - Choose option 7 to exit the application.\n")
+    elseif option == 7 then
         print("Exit\n")
     else
         print("Invalid option. Please try again.")
     end
     
-until option == 6 or option == nil
+until option == 7 or option == nil
