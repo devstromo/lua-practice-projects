@@ -9,8 +9,9 @@ Welcome to the simple calculator, what would you like to do?
 3. Multiply
 4. Divide
 5. Power
-6. Help
-7. Exit
+6. Square Root
+7. Help
+8. Exit
 ]]
 
 repeat
@@ -56,7 +57,17 @@ repeat
         io.write("Enter exponent: ")
         local exponent = io.read("*number")
         print("Result: " .. (base ^ exponent))
+
     elseif option == 6 then
+        print("Square Root")
+        io.write("Enter number: ")
+        local num = io.read("*number")
+        if num < 0 then
+            print("Error: Cannot calculate square root of a negative number.")
+        else
+            print("Result: " .. math.sqrt(num))
+        end    
+    elseif option == 7 then
         print("\n=== Help ===")
         print("1. Add:")
         print("   - Choose option 1 to add two numbers.")
@@ -84,10 +95,10 @@ repeat
 
         print("7. Exit:")
         print("   - Choose option 7 to exit the application.\n")
-    elseif option == 7 then
+    elseif option == 8 then
         print("Exit\n")
     else
         print("Invalid option. Please try again.")
     end
     
-until option == 7 or option == nil
+until option == 8 or option == nil
