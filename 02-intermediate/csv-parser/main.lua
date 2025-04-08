@@ -37,6 +37,8 @@ if not file then
 end
 
 local skip_header = true
+local sum = 0.0
+local count = 0
 
 for line in file:lines() do
     if skip_header then
@@ -47,9 +49,12 @@ for line in file:lines() do
         --     print(string.format("Column %d: %s", i, value))
         -- end
         print("First column:", row[2])
-        print("------")
+        sum = sum + tonumber(row[2])
+        count = count + 1
     end
-
 end
 
 file:close()
+
+print("Sum of second column:", sum)
+print("Average of second column:", sum / count)
