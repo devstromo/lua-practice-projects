@@ -1,3 +1,5 @@
+-- Used dataset from: https://datahub.io/core/house-prices-us
+
 local function get_script_dir()
     local info = debug.getinfo(1, "S")
     local script_path = info.source:sub(2) -- Remove '@'
