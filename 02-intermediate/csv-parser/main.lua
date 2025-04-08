@@ -1,8 +1,8 @@
 local function get_script_dir()
     local info = debug.getinfo(1, "S")
-    local script_path = info.source:sub(2)  -- Remove '@'
+    local script_path = info.source:sub(2) -- Remove '@'
     return script_path:match("(.*/)")
-        or script_path:match("(.*\\)")      -- For Windows backslashes
+        or script_path:match("(.*\\)")     -- For Windows backslashes
 end
 
 -- MAIN
@@ -36,16 +36,20 @@ if not file then
     os.exit(1)
 end
 
+local skip_header = true
+
 for line in file:lines() do
-    
-    local row = parse_csv_line(line)
-    
-    -- for i, value in ipairs(row) do
-    --     print(string.format("Column %d: %s", i, value))
-    -- end
-    print("First column:", row[2])
-    print("------")
+    if skip_header then
+        skip_header = false
+    else
+        local row = parse_csv_line(line)
+        -- for i, value in ipairs(row) do
+        --     print(string.format("Column %d: %s", i, value))
+        -- end
+        print("First column:", row[2])
+        print("------")
+    end
+
 end
 
 file:close()
-
