@@ -37,10 +37,13 @@ if not file then
 end
 
 for line in file:lines() do
+    
     local row = parse_csv_line(line)
-    for i, value in ipairs(row) do
-        print(string.format("Column %d: %s", i, value))
-    end
+    
+    -- for i, value in ipairs(row) do
+    --     print(string.format("Column %d: %s", i, value))
+    -- end
+    print("First column:", row[2])
     print("------")
 end
 
