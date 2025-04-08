@@ -1,4 +1,9 @@
-
+local function get_script_dir()
+    local info = debug.getinfo(1, "S")
+    local script_path = info.source:sub(2)  -- Remove '@'
+    return script_path:match("(.*/)")
+        or script_path:match("(.*\\)")      -- For Windows backslashes
+end
 
 -- MAIN
 local function parse_csv_line(line)
@@ -22,7 +27,8 @@ local function parse_csv_line(line)
     return fields
 end
 
-local filename = "flat-ui__data-us.csv"
+local script_dir = get_script_dir()
+local filename = script_dir .. "flat-ui__data-us.csv"
 local file = io.open(filename, "r")
 
 if not file then
