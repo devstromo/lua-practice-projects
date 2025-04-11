@@ -77,10 +77,20 @@ for i, total in pairs(sums) do
     local avg = total / counts[i]
     total_avg_sum = total_avg_sum + avg
     total_count = total_count + 1
-    print(string.format("%s (Column %d) average: %.2f", headers[i] or "Unknown", i, avg))
 end
 
--- Print overall average
-print(string.format("\nOverall average: %.2f", total_avg_sum / total_count))
+-- Final overall average
+local overall_avg = total_avg_sum / total_count
+print(string.format("\nOverall average: %.2f", overall_avg))
+
+-- Print difference for each column now that we know the true overall average
+print("\nColumn average difference from overall:")
+for i, total in pairs(sums) do
+    local avg = total / counts[i]
+    local diff = avg - overall_avg
+    local sign = diff >= 0 and "+" or "-"
+    print(string.format("%s (Column %d): avg = %.2f | Δ = %s%.2f",
+        headers[i] or "Unknown", i, avg, sign, math.abs(diff)))
+end
 
 file:close()
