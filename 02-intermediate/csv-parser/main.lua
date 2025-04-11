@@ -69,12 +69,18 @@ for line in file:lines() do
     end
 end
 
+local total_avg_sum = 0
+local total_count = 0
 -- Print averages for each column
 print("\nAverages per column:")
 for i, total in pairs(sums) do
     local avg = total / counts[i]
+    total_avg_sum = total_avg_sum + avg
+    total_count = total_count + 1
     print(string.format("%s (Column %d) average: %.2f", headers[i] or "Unknown", i, avg))
 end
 
+-- Print overall average
+print(string.format("\nOverall average: %.2f", total_avg_sum / total_count))
 
 file:close()
