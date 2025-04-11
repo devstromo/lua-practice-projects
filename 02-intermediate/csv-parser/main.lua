@@ -39,24 +39,38 @@ if not file then
 end
 
 local skip_header = true
-local sum = 0.0
-local count = 0
+local sums = {}
+local counts = {}
 
 for line in file:lines() do
     if skip_header then
         skip_header = false
     else
         local row = parse_csv_line(line)
-        -- for i, value in ipairs(row) do
-        --     print(string.format("Column %d: %s", i, value))
-        -- end
-        print("First column:", row[2])
-        sum = sum + tonumber(row[2])
-        count = count + 1
+        for i, value in ipairs(row) do
+            value = value:match("^%s*(.-)%s*$")
+
+            if value ~= "null" and value ~= "" then
+                local number = tonumber(value)
+                if number then
+                    sums[i] = (sums[i] or 0) + number
+                    counts[i] = (counts[i] or 0) + 1
+                else
+                    print("Skipped non-numeric:", value)
+                end
+            else
+                print("Skipped null/empty value in column", i)
+            end
+        end
     end
 end
 
-file:close()
+-- Print averages for each column
+print("\nAverages per column:")
+for i, total in pairs(sums) do
+    local avg = total / counts[i]
+    print(string.format("Column %d average: %.2f", i, avg))
+end
 
-print("Sum of second column:", sum)
-print("Average of second column:", sum / count)
+
+file:close()
