@@ -41,12 +41,16 @@ end
 local skip_header = true
 local sums = {}
 local counts = {}
-
+local headers = {}
 for line in file:lines() do
+    local row = parse_csv_line(line)
     if skip_header then
         skip_header = false
+        for i, value in ipairs(row) do
+            value = value:match("^%s*(.-)%s*$")
+            headers[i] = value
+        end
     else
-        local row = parse_csv_line(line)
         for i, value in ipairs(row) do
             value = value:match("^%s*(.-)%s*$")
 
@@ -69,7 +73,7 @@ end
 print("\nAverages per column:")
 for i, total in pairs(sums) do
     local avg = total / counts[i]
-    print(string.format("Column %d average: %.2f", i, avg))
+    print(string.format("%s (Column %d) average: %.2f", headers[i] or "Unknown", i, avg))
 end
 
 
