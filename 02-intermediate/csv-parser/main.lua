@@ -93,4 +93,34 @@ for i, total in pairs(sums) do
         headers[i] or "Unknown", i, avg, sign, math.abs(diff)))
 end
 
+local max_diff = -math.huge
+local max_diff_col = nil
+
+local min_diff = math.huge
+local min_diff_col = nil
+
+-- Recalculate Δ and track best/worst
+for i, total in pairs(sums) do
+    local avg = total / counts[i]
+    local diff = avg - overall_avg
+
+    if diff > max_diff then
+        max_diff = diff
+        max_diff_col = i
+    end
+
+    if diff < min_diff then
+        min_diff = diff
+        min_diff_col = i
+    end
+end
+
+print("\n Best positive deviation:")
+print(string.format("%s (Column %d): Δ = +%.2f",
+    headers[max_diff_col] or "Unknown", max_diff_col, math.abs(max_diff)))
+
+print("\n Worst negative deviation:")
+print(string.format("%s (Column %d): Δ = -%.2f",
+    headers[min_diff_col] or "Unknown", min_diff_col, math.abs(min_diff)))
+
 file:close()
