@@ -13,6 +13,8 @@ Welcome to the web scraper, what would you like to do?
 ]]
 
 repeat
+    io.write(input)
+    io.write("Enter your option: ")
     local option = io.read("*number")
     local _ = io.read()
     if option == 1 then
