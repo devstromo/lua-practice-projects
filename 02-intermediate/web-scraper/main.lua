@@ -1,6 +1,7 @@
-local websocket = require("websocket")
+local https = require("ssl.https")
+local http = require("socket.http")
+local ltn12 = require("ltn12")
 
-print("LuaWebSocket loaded!")
 -- MAIN
 
 local input = [[
