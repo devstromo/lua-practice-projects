@@ -1,3 +1,6 @@
+local websocket = require("websocket")
+
+print("LuaWebSocket loaded!")
 -- MAIN
 
 local input = [[
