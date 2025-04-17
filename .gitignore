@@ -41,3 +41,4 @@ luac.out
 
 # Custom files
 *.txt
+02-intermediate/web-scraper/luasocket-scm-3.rockspec
