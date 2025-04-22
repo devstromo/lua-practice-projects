@@ -38,8 +38,17 @@ repeat
         for link in response:gmatch("<a href=[\"'](.-)[\"]") do
             table.insert(links, link)
         end
-        print(links)
-        -- Here you would implement the logic to extract links from the webpage
+        for i, link in ipairs(links) do
+            print(i .. ": " .. link)
+        end
+        print("Total links found: " .. #links)
+        local file = io.open("links.txt", "w")
+        for i, link in ipairs(links) do
+            file:write(i .. ": " .. link .. "\n")
+        end
+        file:close()
+        print("Links saved to links.txt")
+
     elseif option == 3 then
         print("Extracting images")
         io.write("Enter URL: ")
