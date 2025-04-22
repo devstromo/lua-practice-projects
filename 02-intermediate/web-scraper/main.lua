@@ -33,6 +33,12 @@ repeat
         io.write("Enter URL: ")
         local url = io.read()
         print("Extracting links from " .. url .. "...")
+        local response = http.request(url)
+        local links = {}
+        for link in response:gmatch("<a href=[\"'](.-)[\"]") do
+            table.insert(links, link)
+        end
+        print(links)
         -- Here you would implement the logic to extract links from the webpage
     elseif option == 3 then
         print("Extracting images")
