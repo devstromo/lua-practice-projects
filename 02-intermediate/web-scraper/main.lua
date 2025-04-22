@@ -80,7 +80,18 @@ repeat
         io.write("Enter URL: ")
         local url = io.read()
         print("Extracting text from " .. url .. "...")
-        -- Here you would implement the logic to extract text from the webpage
+        local response = http.request(url)
+        local text = response:gsub("<[^>]+>", "") -- Remove HTML tags
+        text = text:gsub("%s+", " ") -- Remove extra whitespace
+        print("Extracted text: " .. text)
+        local file = io.open("text.txt", "w")
+        file:write(text)
+        file:close()
+        print("Text saved to text.txt")
+        -- Note: The above regex is a simple example and may not work for all cases.
+        -- You may need to use a more robust HTML parser for complex webpages.
+        -- For example, you could use the LuaXML or lua-htmlparser libraries for better parsing.
+
     elseif option == 5 then
         print("Extracting tables")
         io.write("Enter URL: ")
