@@ -1,7 +1,7 @@
 local https = require("ssl.https")
 local http = require("socket.http")
 local ltn12 = require("ltn12")
-
+local htmlparser = require("htmlparser")
 -- MAIN
 
 local input = [[
@@ -57,8 +57,9 @@ repeat
         -- Here you would implement the logic to extract images from the webpage
         local response = http.request(url)
         local images = {}
-        for img in response:gmatch('<img src=[\"'](.-)[\"']') do
-            table.insert(images, img)
+        local root = htmlparser.parse(response)
+        for _, img in ipairs(root:select("img")) do
+            table.insert(images, img.attributes.src)
         end
         for i, img in ipairs(images) do
             print(i .. ": " .. img)
@@ -90,7 +91,6 @@ repeat
         print("Text saved to text.txt")
         -- Note: The above regex is a simple example and may not work for all cases.
         -- You may need to use a more robust HTML parser for complex webpages.
-        -- For example, you could use the LuaXML or lua-htmlparser libraries for better parsing.
 
     elseif option == 5 then
         print("Extracting tables")
