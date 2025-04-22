@@ -26,6 +26,8 @@ repeat
         io.write("Enter URL: ")
         local url = io.read()
         print("Scraping " .. url .. "...")
+        local response = http.request(url)
+        print(response)
     elseif option == 2 then
         print("Extracting links")
         io.write("Enter URL: ")
