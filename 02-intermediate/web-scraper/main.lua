@@ -76,15 +76,57 @@ repeat
         io.write("Enter URL: ")
         local url = io.read()
         print("Extracting text from " .. url .. "...")
-        local response = http.request(url)
-        local text = response:gsub("<[^>]+>", "") -- Remove HTML tags
-        text = text:gsub("%s+", " ") -- Remove extra whitespace
+        local body = {}
+        local res, code = nil, nil
+        if url:match("^https://") then
+            res, code = https.request {
+                url = url,
+                sink = ltn12.sink.table(body)
+            }
+        elseif url:match("^http://") then
+            res, code = http.request {
+                url = url,
+                sink = ltn12.sink.table(body)
+            }
+        else
+            print("Invalid URL. Must start with http:// or https://")
+            return
+        end
+
+        -- Validate response
+        if not res or code ~= 200 then
+            print("Failed to fetch page. Status:", code or "unknown")
+            return
+        end
+
+        -- Join content and parse HTML
+        local html = table.concat(body)
+        local tree = htmlparser.parse(html)
+
+        -- Collect all visible text nodes
+        local extracted_text = {}
+
+        local function collect_text(node)
+            for _, child in ipairs(node.nodes) do
+                if child._type == "text" then
+                    table.insert(extracted_text, child.text)
+                else
+                    collect_text(child)
+                end
+            end
+        end
+
+        collect_text(tree)
+
+        -- Clean and write to file
+        local final_text = table.concat(extracted_text, " ")
+        final_text = final_text:gsub("%s+", " ")
+
         local file = io.open("text.txt", "w")
-        file:write(text)
+        file:write(final_text)
         file:close()
+
         print("Text saved to text.txt")
-        -- Note: The above regex is a simple example and may not work for all cases.
-        -- You may need to use a more robust HTML parser for complex webpages.
 
     elseif option == 5 then
         print("Extracting tables")
