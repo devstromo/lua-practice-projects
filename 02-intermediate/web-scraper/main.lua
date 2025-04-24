@@ -79,7 +79,6 @@ repeat
         local response = http.request(url)
         local text = response:gsub("<[^>]+>", "") -- Remove HTML tags
         text = text:gsub("%s+", " ") -- Remove extra whitespace
-        print("Extracted text: " .. text)
         local file = io.open("text.txt", "w")
         file:write(text)
         file:close()
