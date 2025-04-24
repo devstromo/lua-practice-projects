@@ -132,7 +132,60 @@ repeat
         io.write("Enter URL: ")
         local url = io.read()
         print("Extracting all from " .. url .. "...")
-        -- Here you would implement the logic to extract all data from the webpage
+        local response = http.request(url)
+        local all_data = {}
+        local root = htmlparser.parse(response)
+        -- Extract links
+        local links = {}
+        for link in response:gmatch("<a href=[\"'](.-)[\"]") do
+            table.insert(links, link)
+        end
+        all_data.links = links
+        -- Extract images
+        local images = {}
+        for _, img in ipairs(root:select("img")) do
+            table.insert(images, img.attributes.src)
+        end
+        all_data.images = images
+        -- Extract text
+        local text = response:gsub("<[^>]+>", "") -- Remove HTML tags
+        text = text:gsub("%s+", " ") -- Remove extra whitespace
+        all_data.text = text
+        -- Extract tables
+        local tables = {}
+        for _, table in ipairs(root:select("table")) do
+            local rows = {}
+            for _, row in ipairs(table:select("tr")) do
+                local cells = {}
+                for _, cell in ipairs(row:select("td")) do
+                    table.insert(cells, cell:getcontent())
+                end
+                table.insert(rows, cells)
+            end
+            table.insert(tables, rows)
+        end
+        all_data.tables = tables
+        -- Save all data to a file
+        local file = io.open("all_data.txt", "w")
+        file:write("Links:\n")
+        for i, link in ipairs(all_data.links) do
+            file:write(i .. ": " .. link .. "\n")
+        end
+        file:write("\nImages:\n")
+        for i, img in ipairs(all_data.images) do
+            file:write(i .. ": " .. img .. "\n")
+        end
+        file:write("\nText:\n" .. all_data.text .. "\n")
+        file:write("\nTables:\n")
+        for i, tbl in ipairs(all_data.tables) do
+            file:write("Table " .. i .. ":\n")
+            for _, row in ipairs(tbl) do
+                file:write(table.concat(row, "\t") .. "\n")
+            end
+            file:write("\n")
+        end
+        file:close()
+        print("All data saved to all_data.txt")
     elseif option == 7 then
         print("Help")
         print("1. Scrape a webpage: Enter a URL to scrape the webpage.")
