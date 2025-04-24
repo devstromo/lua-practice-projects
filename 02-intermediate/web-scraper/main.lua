@@ -93,6 +93,37 @@ repeat
         local url = io.read()
         print("Extracting tables from " .. url .. "...")
         -- Here you would implement the logic to extract tables from the webpage
+        local response = http.request(url)
+        local tables = {}
+        local root = htmlparser.parse(response)
+        for _, table in ipairs(root:select("table")) do
+            local rows = {}
+            for _, row in ipairs(table:select("tr")) do
+                local cells = {}
+                for _, cell in ipairs(row:select("td")) do
+                    table.insert(cells, cell:getcontent())
+                end
+                table.insert(rows, cells)
+            end
+            table.insert(tables, rows)
+        end
+        for i, tbl in ipairs(tables) do
+            print("Table " .. i .. ":")
+            for _, row in ipairs(tbl) do
+                print(table.concat(row, "\t"))
+            end
+        end
+        print("Total tables found: " .. #tables)
+        local file = io.open("tables.txt", "w")
+        for i, tbl in ipairs(tables) do
+            file:write("Table " .. i .. ":\n")
+            for _, row in ipairs(tbl) do
+                file:write(table.concat(row, "\t") .. "\n")
+            end
+            file:write("\n")
+        end
+        file:close()
+        print("Tables saved to tables.txt")
     elseif option == 6 then
         print("Extracting all")
         io.write("Enter URL: ")
