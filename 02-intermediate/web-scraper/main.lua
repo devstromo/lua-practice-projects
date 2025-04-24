@@ -71,11 +71,6 @@ repeat
         end
         file:close()
         print("Images saved to images.txt")
-        -- Note: The above regex is a simple example and may not work for all cases.
-        -- You may need to use a more robust HTML parser for complex webpages.
-        -- For example, you could use the LuaXML or lua-htmlparser libraries for better parsing.
-        -- You can also use the lxml library in Python for more complex scraping tasks.
-        -- For example, you could use the requests library to fetch the webpage and then use BeautifulSoup to parse it.
     elseif option == 4 then
         print("Extracting text")
         io.write("Enter URL: ")
