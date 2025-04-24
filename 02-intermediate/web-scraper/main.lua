@@ -122,7 +122,11 @@ repeat
             file:write("\n")
         end
         file:close()
-        print("Tables saved to tables.txt")
+        if #tables ~= 0 then
+            print("Tables saved to tables.txt")
+        else
+            print("No tables found.")
+        end
     elseif option == 6 then
         print("Extracting all")
         io.write("Enter URL: ")
