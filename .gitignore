@@ -42,3 +42,13 @@ luac.out
 # Custom files
 *.txt
 02-intermediate/web-scraper/luasocket-scm-3.rockspec
+02-intermediate/budget-tracker/register.csv
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.swn
+*.swm
