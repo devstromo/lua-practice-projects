@@ -49,7 +49,23 @@ repeat
         print("Transaction added: " .. amount .. " " .. category .. " " .. date)
     elseif option == 2 then
         print("Viewing all transactions")
-        -- Here you would implement the logic to view all transactions
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        print("Transactions:")
+        print(header)
+        -- Read each line and print the transaction details
+        for line in file:lines() do
+            local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and category and date then
+                print(string.format("Amount: %s, Category: %s, Date: %s", amount, category, date))
+            end
+        end
+        file:close()
+        print("End of transactions")
     elseif option == 3 then
         print("Viewing transactions by category")
         -- Here you would implement the logic to view transactions by category
