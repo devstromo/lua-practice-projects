@@ -8,6 +8,16 @@ local function init()
     file:close()
 end
 
+local function addTransaction(amount, category, date)
+    local file = io.open("register.csv", "a")
+    if file == nil then
+        print("Error: Unable to open register.csv.")
+        return
+    end
+    file:write(string.format("%s,%s,%s\n", amount, category, date))
+    file:close()
+end
+
 -- MAIN
 local input = [[
 Welcome to the budget tracker?
@@ -30,10 +40,12 @@ repeat
         print("Adding a new transaction")
         io.write("Enter the amount: ")
         local amount = io.read("*number")
+        local _ = io.read()
         io.write("Enter the category: ")
         local category = io.read()
         io.write("Enter the date (YYYY-MM-DD): ")
         local date = io.read()
+        addTransaction(amount, category, date)
         print("Transaction added: " .. amount .. " " .. category .. " " .. date)
     elseif option == 2 then
         print("Viewing all transactions")
