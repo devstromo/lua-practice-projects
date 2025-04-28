@@ -1,3 +1,13 @@
+local function init()
+    local file = io.open("register.csv", "w")
+    if file == nil then
+        print("Error: Unable to register.csv.")
+        return
+    end
+    file:write("amount,category,date\n")	
+    file:close()
+end
+
 -- MAIN
 local input = [[
 Welcome to the budget tracker?
@@ -9,6 +19,7 @@ Welcome to the budget tracker?
 6. Exit
 ]]
 
+init()
 
 repeat
     io.write(input)
@@ -42,5 +53,5 @@ repeat
         print("Invalid option, please try again.")
     end
     io.write("Press Enter to continue...")
-    
+
 until option == 6
