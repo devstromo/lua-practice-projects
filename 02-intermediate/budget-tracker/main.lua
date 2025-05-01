@@ -69,8 +69,7 @@ repeat
             return
         end
         local header = file:read("*line") -- Read the header line
-        print("---- Transactions ----")
-        print(header)
+        print("\n---- Transactions ----\n")
         -- Read each line and print the transaction details
         for line in file:lines() do
             local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
@@ -79,7 +78,7 @@ repeat
             end
         end
         file:close()
-        print("---- End of transactions ----\n")
+        print("\n---- End of transactions ----\n")
 
     elseif option == 3 then
         print("Viewing transactions by category")
@@ -92,7 +91,6 @@ repeat
         end
         local header = file:read("*line") -- Read the header line
         print("\n---- Transactions ----\n")
-        print(header)
         -- Read each line and print the transaction details
         local found = false
         for line in file:lines() do
