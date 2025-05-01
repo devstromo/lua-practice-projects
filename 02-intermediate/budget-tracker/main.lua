@@ -1,10 +1,24 @@
 local function init()
+
+    -- Check if the file exists
+    local file = io.open("register.csv", "r")
+    if file then
+        -- File exists, close it
+        file:close()
+    else
+        -- File does not exist, create it
+        createFile()
+    end
+end
+
+local function createFile()
+    -- Create the file and write the header
     local file = io.open("register.csv", "w")
     if file == nil then
         print("Error: Unable to register.csv.")
         return
     end
-    file:write("amount,category,date\n")	
+    file:write("amount,category,date\n")
     file:close()
 end
 
