@@ -56,6 +56,24 @@ local function checkDateInRange(date, start_date, end_date)
     return date >= start_date and date <= end_date
 end
 
+local function isValidDate(date_str)
+    -- First, match the format
+    local y, m, d = date_str:match("^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
+    if not y or not m or not d then return false end
+
+    -- Convert to numbers
+    y, m, d = tonumber(y), tonumber(m), tonumber(d)
+
+    -- Try to create a valid timestamp
+    local timestamp = os.time({ year = y, month = m, day = d })
+    if not timestamp then return false end
+
+    -- Convert back to date to verify correctness
+    local real_y, real_m, real_d = os.date("*t", timestamp).year, os.date("*t", timestamp).month, os.date("*t", timestamp).day
+
+    return y == real_y and m == real_m and d == real_d
+end
+
 -- MAIN
 local input = [[
 Welcome to the budget tracker?
@@ -142,12 +160,16 @@ repeat
             print("Invalid date format. Please use YYYY-MM-DD.")
             return
         end
+        if not isValidDate(star_date) or not isValidDate(end_date) then
+            print("One or both dates are invalid or incorrectly formatted.")
+            return
+        end
         -- Check if the start date is before the end date
         if not checkDateRange(star_date, end_date) then
             print("Start date must be before end date.")
             return
         end
-      
+
         local file = io.open("register.csv", "r")
         if file == nil then
             print("Error: Unable to open register.csv.")
@@ -161,7 +183,7 @@ repeat
             local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
             if amount and category and date then
                 -- Check if the date is within the specified range
-                if checkDateInRange(date, star_date, end_date)  then
+                if checkDateInRange(date, star_date, end_date) then
                     found = true
                     print(string.format("Amount: %s, Category: %s, Date: %s", amount, category, date))
                 end
