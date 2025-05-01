@@ -60,7 +60,7 @@ repeat
         io.write("Enter the date (YYYY-MM-DD): ")
         local date = io.read()
         addTransaction(amount, category, date)
-        print("Transaction added: " .. amount .. " " .. category .. " " .. date)
+        print("Transaction added: " .. amount .. " " .. category .. " " .. date .. "\n")
     elseif option == 2 then
         print("Viewing all transactions")
         local file = io.open("register.csv", "r")
@@ -69,7 +69,7 @@ repeat
             return
         end
         local header = file:read("*line") -- Read the header line
-        print("Transactions:")
+        print("---- Transactions ----")
         print(header)
         -- Read each line and print the transaction details
         for line in file:lines() do
@@ -79,7 +79,8 @@ repeat
             end
         end
         file:close()
-        print("End of transactions")
+        print("---- End of transactions ----\n")
+
     elseif option == 3 then
         print("Viewing transactions by category")
         -- Here you would implement the logic to view transactions by category
