@@ -101,6 +101,15 @@ repeat
         local category = io.read()
         io.write("Enter the date (YYYY-MM-DD): ")
         local date = io.read()
+        local check_date = checkDateFormat(date)
+        if not check_date then
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            return
+        end
+        if not isValidDate(date) then
+            print("Invalid date.")
+            return
+        end
         addTransaction(amount, category, date)
         print("Transaction added: " .. amount .. " " .. category .. " " .. date .. "\n")
     elseif option == 2 then
