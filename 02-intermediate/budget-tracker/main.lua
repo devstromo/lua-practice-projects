@@ -87,11 +87,12 @@ Welcome to the budget tracker?
 
 init()
 
-repeat
+while true do
     io.write(input)
     io.write("Enter your option: ")
     local option = io.read("*number")
     local _ = io.read()
+    ::continue::
     if option == 1 then
         print("Adding a new transaction")
         io.write("Enter the amount: ")
@@ -104,11 +105,11 @@ repeat
         local check_date = checkDateFormat(date)
         if not check_date then
             print("Invalid date format. Please use YYYY-MM-DD.")
-            return
+            goto continue
         end
         if not isValidDate(date) then
             print("Invalid date.")
-            return
+            goto continue
         end
         addTransaction(amount, category, date)
         print("Transaction added: " .. amount .. " " .. category .. " " .. date .. "\n")
@@ -209,9 +210,10 @@ repeat
         -- Here you would implement the help section
     elseif option == 6 then
         print("Exiting...")
+        break
     else
         print("Invalid option, please try again.")
     end
     io.write("Press Enter to continue...")
 
-until option == 6
+end
