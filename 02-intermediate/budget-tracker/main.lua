@@ -108,6 +108,49 @@ repeat
     elseif option == 4 then
         print("Viewing transactions by date")
         -- Here you would implement the logic to view transactions by date
+        io.write("Enter the start date (YYYY-MM-DD): ")
+        local star_date = io.read()
+        io.write("Enter the end date (YYYY-MM-DD): ")
+        local end_date = io.read()
+        -- Validate the date format
+        local date_pattern = "%d%d%d%d%-%d%d%-%d%d"
+        if not star_date:match(date_pattern) or not end_date:match(date_pattern) then
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            return
+        end
+        -- Check if the start date is before the end date
+        local start_year, start_month, start_day = star_date:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
+        local end_year, end_month, end_day = end_date:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
+        if os.time({year = start_year, month = start_month, day = start_day}) >
+           os.time({year = end_year, month = end_month, day = end_day}) then
+            print("Start date must be before end date.")
+            return
+        end
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        print("\n---- Transactions ----\n")
+        -- Read each line and print the transaction details
+        local found = false
+        for line in file:lines() do
+            local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and category and date then
+                -- Check if the date is within the specified range
+                if date >= star_date and date <= end_date then
+                    found = true
+                    print(string.format("Amount: %s, Category: %s, Date: %s", amount, category, date))
+                end
+            end
+        end
+        -- If no transactions were found, print a message
+        if not found then
+            print("No transactions found between " .. star_date .. " and " .. end_date)
+        end
+        file:close()
+        print("\n---- End of transactions ----\n")
     elseif option == 5 then
         print("Help")
         -- Here you would implement the help section
