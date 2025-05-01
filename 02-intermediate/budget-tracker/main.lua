@@ -32,6 +32,30 @@ local function addTransaction(amount, category, date)
     file:close()
 end
 
+local function checkDateFormat(date)
+    -- Check if the date is in the correct format (YYYY-MM-DD)
+    local pattern = "%d%d%d%d%-%d%d%-%d%d"
+    return date:match(pattern) ~= nil
+end
+local function checkDateRange(start_date, end_date)
+    -- Check if the start date is before the end date
+    local start_year, start_month, start_day = start_date:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
+    local end_year, end_month, end_day = end_date:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
+    return os.time({
+        year = start_year,
+        month = start_month,
+        day = start_day
+    }) < os.time({
+        year = end_year,
+        month = end_month,
+        day = end_day
+    })
+end
+local function checkDateInRange(date, start_date, end_date)
+    -- Check if the date is within the specified range
+    return date >= start_date and date <= end_date
+end
+
 -- MAIN
 local input = [[
 Welcome to the budget tracker?
@@ -112,20 +136,18 @@ repeat
         local star_date = io.read()
         io.write("Enter the end date (YYYY-MM-DD): ")
         local end_date = io.read()
-        -- Validate the date format
-        local date_pattern = "%d%d%d%d%-%d%d%-%d%d"
-        if not star_date:match(date_pattern) or not end_date:match(date_pattern) then
+        local check_start_date = checkDateFormat(star_date)
+        local check_end_date = checkDateFormat(end_date)
+        if not check_start_date or not check_end_date then
             print("Invalid date format. Please use YYYY-MM-DD.")
             return
         end
         -- Check if the start date is before the end date
-        local start_year, start_month, start_day = star_date:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
-        local end_year, end_month, end_day = end_date:match("(%d%d%d%d)%-(%d%d)%-(%d%d)")
-        if os.time({year = start_year, month = start_month, day = start_day}) >
-           os.time({year = end_year, month = end_month, day = end_day}) then
+        if not checkDateRange(star_date, end_date) then
             print("Start date must be before end date.")
             return
         end
+      
         local file = io.open("register.csv", "r")
         if file == nil then
             print("Error: Unable to open register.csv.")
@@ -139,7 +161,7 @@ repeat
             local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
             if amount and category and date then
                 -- Check if the date is within the specified range
-                if date >= star_date and date <= end_date then
+                if checkDateInRange(date, star_date, end_date)  then
                     found = true
                     print(string.format("Amount: %s, Category: %s, Date: %s", amount, category, date))
                 end
