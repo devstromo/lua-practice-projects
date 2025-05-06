@@ -147,7 +147,7 @@ while true do
         local found = false
         for line in file:lines() do
             local amount, cat, date = line:match("([^,]+),([^,]+),([^,]+)")
-            if amount and cat == string.upper(category) and date then
+            if amount and string.upper(cat) == string.upper(category) and date then
                 found = true
                 print(string.format("Amount: %s, Category: %s, Date: %s", amount, cat, date))
             end
