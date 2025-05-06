@@ -28,7 +28,7 @@ local function addTransaction(amount, category, date)
         print("Error: Unable to open register.csv.")
         return
     end
-    file:write(string.format("%s,%s,%s\n", amount, category, date))
+    file:write(string.format("%s,%s,%s\n", amount, string.upper(category), date))
     file:close()
 end
 
@@ -147,7 +147,7 @@ while true do
         local found = false
         for line in file:lines() do
             local amount, cat, date = line:match("([^,]+),([^,]+),([^,]+)")
-            if amount and cat == category and date then
+            if amount and cat == string.upper(category) and date then
                 found = true
                 print(string.format("Amount: %s, Category: %s, Date: %s", amount, cat, date))
             end
