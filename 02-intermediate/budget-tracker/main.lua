@@ -207,7 +207,16 @@ while true do
         print("\n---- End of transactions ----\n")
     elseif option == 5 then
         print("Help")
-        -- Here you would implement the help section
+        print("1. Add a new transaction: Enter the amount, category, and date.")
+        print("2. View all transactions: Displays all transactions in the register.")
+        print("3. View transactions by category: Enter a category to filter transactions.")
+        print("4. View transactions by date: Enter a start and end date to filter transactions.")
+        print("5. Help: Displays this help message.")
+        print("6. Exit: Exits the program.")
+        print("Note: Dates should be in the format YYYY-MM-DD.")
+        print("Note: Amounts should be numeric.")
+        print("Note: Categories can be any string.")
+        print("Note: The program will check for valid date formats and ranges.")
     elseif option == 6 then
         print("Exiting...")
         break
