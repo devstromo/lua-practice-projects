@@ -211,7 +211,7 @@ while true do
         end
         file:close()
         print("\n---- End of transactions ----\n")
-    elseif option == 12 then
+    elseif option == 11 then
         print("Help")
         print("1. Add a new transaction: Enter the amount, category, and date.")
         print("2. View all transactions: Displays all transactions in the register.")
