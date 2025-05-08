@@ -81,8 +81,14 @@ Welcome to the budget tracker?
 2. View all transactions
 3. View transactions by category
 4. View transactions by date
-5. Help
-6. Exit
+5. Total spent
+6. Total spent by category
+7. Total spent by date
+8. Total spent by date range
+9. Total spent by category and date
+10. Total spent by category and date range
+11. Help
+12. Exit
 ]]
 
 init()
@@ -205,19 +211,25 @@ while true do
         end
         file:close()
         print("\n---- End of transactions ----\n")
-    elseif option == 5 then
+    elseif option == 12 then
         print("Help")
         print("1. Add a new transaction: Enter the amount, category, and date.")
         print("2. View all transactions: Displays all transactions in the register.")
         print("3. View transactions by category: Enter a category to filter transactions.")
         print("4. View transactions by date: Enter a start and end date to filter transactions.")
-        print("5. Help: Displays this help message.")
-        print("6. Exit: Exits the program.")
+        print("5. Total spent: Displays the total amount spent.")
+        print("6. Total spent by category: Enter a category to filter total amount spent.")
+        print("7. Total spent by date: Enter a date to filter total amount spent.")
+        print("8. Total spent by date range: Enter a start and end date to filter total amount spent.")
+        print("9. Total spent by category and date: Enter a category and date to filter total amount spent.")
+        print("10. Total spent by category and date range: Enter a category, start date, and end date to filter total amount spent.")
+        print("11. Help: Displays this help message.")
+        print("12. Exit: Exits the program.")
         print("Note: Dates should be in the format YYYY-MM-DD.")
         print("Note: Amounts should be numeric.")
         print("Note: Categories can be any string.")
         print("Note: The program will check for valid date formats and ranges.")
-    elseif option == 6 then
+    elseif option == 12 then
         print("Exiting...")
         break
     else
