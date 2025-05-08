@@ -266,6 +266,39 @@ while true do
 
         print("Total amount spent in category " .. category .. ": " .. total .. "\n")
     elseif option == 7 then
+        print("Total spent by date")
+        io.write("Enter the date (YYYY-MM-DD): ")
+        local date = io.read()
+        local check_date = checkDateFormat(date)
+        if not check_date then
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            goto continue
+        end
+        if not isValidDate(date) then
+            print("Invalid date.")
+            goto continue
+        end
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        local total = 0
+        -- Read each line and calculate the total amount spent for the specified date
+        for line in file:lines() do
+            local amount, category, dat = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and category and dat == date then
+                total = total + tonumber(amount)
+            end
+        end
+        file:close()
+        if total == 0 then
+            print("No transactions found for date: " .. date)
+            goto continue
+        end
+
+        print("Total amount spent on " .. date .. ": " .. total .. "\n")
     elseif option == 8 then
     elseif option == 9 then
     elseif option == 10 then
