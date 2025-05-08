@@ -211,6 +211,31 @@ while true do
         end
         file:close()
         print("\n---- End of transactions ----\n")
+
+    elseif option == 5 then
+        -- Total spent
+        print("Total spent")
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        local total = 0
+        -- Read each line and calculate the total amount spent
+        for line in file:lines() do
+            local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and category and date then
+                total = total + tonumber(amount)
+            end
+        end
+        file:close()
+        print("Total amount spent: " .. total .. "\n")
+    elseif option == 6 then
+    elseif option == 7 then
+    elseif option == 8 then
+    elseif option == 9 then
+    elseif option == 10 then        
     elseif option == 11 then
         print("Help")
         print("1. Add a new transaction: Enter the amount, category, and date.")
