@@ -59,17 +59,26 @@ end
 local function isValidDate(date_str)
     -- First, match the format
     local y, m, d = date_str:match("^(%d%d%d%d)%-(%d%d)%-(%d%d)$")
-    if not y or not m or not d then return false end
+    if not y or not m or not d then
+        return false
+    end
 
     -- Convert to numbers
     y, m, d = tonumber(y), tonumber(m), tonumber(d)
 
     -- Try to create a valid timestamp
-    local timestamp = os.time({ year = y, month = m, day = d })
-    if not timestamp then return false end
+    local timestamp = os.time({
+        year = y,
+        month = m,
+        day = d
+    })
+    if not timestamp then
+        return false
+    end
 
     -- Convert back to date to verify correctness
-    local real_y, real_m, real_d = os.date("*t", timestamp).year, os.date("*t", timestamp).month, os.date("*t", timestamp).day
+    local real_y, real_m, real_d = os.date("*t", timestamp).year, os.date("*t", timestamp).month,
+        os.date("*t", timestamp).day
 
     return y == real_y and m == real_m and d == real_d
 end
@@ -232,10 +241,34 @@ while true do
         file:close()
         print("Total amount spent: " .. total .. "\n")
     elseif option == 6 then
+        print("Total spent by category")
+        io.write("Enter the category: ")
+        local category = io.read()
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        local total = 0
+        -- Read each line and calculate the total amount spent for the specified category
+        for line in file:lines() do
+            local amount, cat, date = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and string.upper(cat) == string.upper(category) and date then
+                total = total + tonumber(amount)
+            end
+        end
+        file:close()
+        if total == 0 then
+            print("No transactions found for category: " .. category)
+            goto continue
+        end
+
+        print("Total amount spent in category " .. category .. ": " .. total .. "\n")
     elseif option == 7 then
     elseif option == 8 then
     elseif option == 9 then
-    elseif option == 10 then        
+    elseif option == 10 then
     elseif option == 11 then
         print("Help")
         print("1. Add a new transaction: Enter the amount, category, and date.")
@@ -247,7 +280,8 @@ while true do
         print("7. Total spent by date: Enter a date to filter total amount spent.")
         print("8. Total spent by date range: Enter a start and end date to filter total amount spent.")
         print("9. Total spent by category and date: Enter a category and date to filter total amount spent.")
-        print("10. Total spent by category and date range: Enter a category, start date, and end date to filter total amount spent.")
+        print(
+            "10. Total spent by category and date range: Enter a category, start date, and end date to filter total amount spent.")
         print("11. Help: Displays this help message.")
         print("12. Exit: Exits the program.")
         print("Note: Dates should be in the format YYYY-MM-DD.")
