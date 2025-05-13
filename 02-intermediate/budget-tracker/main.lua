@@ -103,6 +103,7 @@ Welcome to the budget tracker?
 init()
 
 while true do
+    ::start::
     io.write(input)
     io.write("Enter your option: ")
     local option = io.read("*number")
@@ -346,6 +347,44 @@ while true do
 
         print("Total amount spent between " .. star_date .. " and " .. end_date .. ": " .. total .. "\n")
     elseif option == 9 then
+        print("Total spent by category and date")
+        io.write("Enter the category: ")
+        local category = io.read()
+        io.write("Enter the date (YYYY-MM-DD): ")
+        local date = io.read()
+        local check_date = checkDateFormat(date)
+        if not check_date then
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            goto continue
+        end
+        if not isValidDate(date) then
+            print("Invalid date.")
+            goto continue
+        end
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        local total = 0
+        -- Read each line and calculate the total amount spent for the specified category and date
+        for line in file:lines() do
+            local amount, cat, dat = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and string.upper(cat) == string.upper(category) and dat == date then
+                total = total + tonumber(amount)
+            end
+        end
+        file:close()
+        if total == 0 then
+            print("\n")
+            print("No transactions found for category " .. category .. " on date " .. date)
+            print("Please check the category and date.")
+            print("\n")
+            goto start
+        end
+
+        print("Total amount spent in category " .. category .. " on " .. date .. ": " .. total .. "\n")
     elseif option == 10 then
     elseif option == 11 then
         print("Help")
