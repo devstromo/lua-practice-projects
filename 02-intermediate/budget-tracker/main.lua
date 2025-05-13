@@ -300,6 +300,51 @@ while true do
 
         print("Total amount spent on " .. date .. ": " .. total .. "\n")
     elseif option == 8 then
+        print("Total spent by date range")
+        io.write("Enter the start date (YYYY-MM-DD): ")
+        local star_date = io.read()
+        io.write("Enter the end date (YYYY-MM-DD): ")
+        local end_date = io.read()
+        local check_start_date = checkDateFormat(star_date)
+        local check_end_date = checkDateFormat(end_date)
+        if not check_start_date or not check_end_date then
+            print("Invalid date format. Please use YYYY-MM-DD.")
+            return
+        end
+        if not isValidDate(star_date) or not isValidDate(end_date) then
+            print("One or both dates are invalid or incorrectly formatted.")
+            return
+        end
+        -- Check if the start date is before the end date
+        if not checkDateRange(star_date, end_date) then
+            print("Start date must be before end date.")
+            return
+        end
+
+        local file = io.open("register.csv", "r")
+        if file == nil then
+            print("Error: Unable to open register.csv.")
+            return
+        end
+        local header = file:read("*line") -- Read the header line
+        local total = 0
+        -- Read each line and calculate the total amount spent for the specified date range
+        for line in file:lines() do
+            local amount, category, date = line:match("([^,]+),([^,]+),([^,]+)")
+            if amount and category and date then
+                -- Check if the date is within the specified range
+                if checkDateInRange(date, star_date, end_date) then
+                    total = total + tonumber(amount)
+                end
+            end
+        end
+        file:close()
+        if total == 0 then
+            print("No transactions found between " .. star_date .. " and " .. end_date)
+            goto continue
+        end
+
+        print("Total amount spent between " .. star_date .. " and " .. end_date .. ": " .. total .. "\n")
     elseif option == 9 then
     elseif option == 10 then
     elseif option == 11 then
