@@ -26,28 +26,22 @@ local function read_log_file(log_file_path)
     return log_data
 end
 
-local function count_lines(filename)
+local function analyze_log_data(filename)
     local file = io.open(filename, "r")
     if not file then
         print("Error: Cannot open file " .. filename)
         return
     end
 
-    local count = 0
-    for _ in file:lines() do
-        count = count + 1
+    local line_count = 0
+
+    for line in file:lines() do
+        line_count = line_count + 1
+        -- You can analyze each line here (count status codes, IPs, etc.)
     end
 
     file:close()
-    print("Total lines processed: " .. count)
-end
-
-local function analyze_log_data(log_data)
-    -- Placeholder for log analysis logic
-    -- For now, just print the log data
-    print("Log data:")
-    count_lines(log_data)
-
+    print("Total lines processed: " .. line_count)
 end
 
 print_welcome_message()
