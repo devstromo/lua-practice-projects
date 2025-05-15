@@ -1,3 +1,5 @@
+local analyzer = require("analyzer")
+
 local input = [[
 Welcome to the log analyzer!
 This is a simple log analyzer that will help you analyze your logs.
@@ -26,22 +28,19 @@ local function read_log_file(log_file_path)
     return log_data
 end
 
-local function analyze_log_data(filename)
-    local file = io.open(filename, "r")
+local function analyze_file(path)
+    local file = io.open(path, "r")
     if not file then
-        print("Error: Cannot open file " .. filename)
+        print("Could not open file:", path)
         return
     end
 
-    local line_count = 0
-
     for line in file:lines() do
-        line_count = line_count + 1
-        -- You can analyze each line here (count status codes, IPs, etc.)
+        analyzer.process_line(line)
     end
 
     file:close()
-    print("Total lines processed: " .. line_count)
+    analyzer.report()
 end
 
 print_welcome_message()
@@ -52,4 +51,4 @@ if not log_data then
     return
 end
 
-analyze_log_data(log_file_path)
+analyze_file(log_file_path)
