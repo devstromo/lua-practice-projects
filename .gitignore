@@ -52,3 +52,4 @@ luac.out
 *.swo
 *.swn
 *.swm
+*.log
