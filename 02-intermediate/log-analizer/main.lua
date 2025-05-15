@@ -1,5 +1,19 @@
 local analyzer = require("analyzer")
 
+local plugins = {}
+
+local function load_plugins()
+    local plugin_list = {"count_lines", "status_codes"} -- could come from CLI later
+    for _, name in ipairs(plugin_list) do
+        local ok, plugin = pcall(require, "analyzer.plugins." .. name)
+        if ok and plugin and plugin.process_line then
+            table.insert(plugins, plugin)
+        else
+            print("Failed to load plugin:", name)
+        end
+    end
+end
+
 local input = [[
 Welcome to the log analyzer!
 This is a simple log analyzer that will help you analyze your logs.
@@ -36,11 +50,16 @@ local function analyze_file(path)
     end
 
     for line in file:lines() do
-        analyzer.process_line(line)
+        for _, plugin in ipairs(plugins) do
+            plugin.process_line(line)
+        end
     end
-
+    for _, plugin in ipairs(plugins) do
+        if plugin.report then
+            plugin.report()
+        end
+    end
     file:close()
-    analyzer.report()
 end
 
 print_welcome_message()
@@ -51,4 +70,5 @@ if not log_data then
     return
 end
 
+load_plugins()
 analyze_file(log_file_path)
