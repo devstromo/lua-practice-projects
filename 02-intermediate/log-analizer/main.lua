@@ -1,5 +1,3 @@
-local analyzer = require("analyzer")
-
 -- Parse CLI arguments into a table
 local cli_args = {}
 for _, arg_str in ipairs(arg or {}) do
