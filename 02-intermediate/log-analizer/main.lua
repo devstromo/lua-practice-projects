@@ -24,6 +24,11 @@ local function load_plugins()
     for _, name in ipairs(plugin_list) do
         local ok, plugin = pcall(require, "analyzer.plugins." .. name)
         if ok and plugin and plugin.process_line then
+            -- ✅ Pass CLI args to plugin if it wants them
+            if plugin.set_args then
+                plugin.set_args(cli_args)
+            end
+
             table.insert(plugins, plugin)
         else
             print("Failed to load plugin:", name)
