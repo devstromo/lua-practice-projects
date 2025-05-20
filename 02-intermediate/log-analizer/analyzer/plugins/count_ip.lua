@@ -1,6 +1,7 @@
 -- analyzer/plugins/count_ip.lua
 local M = {}
 local ip_counts = {}
+M.limit = 5  -- default number of top IPs to show
 
 function M.process_line(line)
     local ip = line:match("(%d+%.%d+%.%d+%.%d+)")
@@ -9,23 +10,31 @@ function M.process_line(line)
     end
 end
 
-function M.report()
-    print("\nIP address counts:")
-    local max = 0
-    local max_ip = ""
-    for ip, count in pairs(ip_counts) do
-        print("  " .. ip .. ": " .. count)
-        if count > max then
-            max = count
-            max_ip = ip
-        end
+function M.set_args(args)
+    if args.top_ips then
+        M.limit = tonumber(args.top_ips) or M.limit
     end
-    if max > 0 then
-        print("Most common IP address: " .. max_ip .. " (" .. max .. " occurrences)")
-    else
+end
+
+function M.report()
+    print("\nTop IP address counts:")
+
+    -- Convert to array for sorting
+    local sorted = {}
+    for ip, count in pairs(ip_counts) do
+        table.insert(sorted, { ip = ip, count = count })
+    end
+
+    table.sort(sorted, function(a, b) return a.count > b.count end)
+
+    local limit = math.min(M.limit, #sorted)
+    for i = 1, limit do
+        print(string.format("%2d. %-15s %5d", i, sorted[i].ip, sorted[i].count))
+    end
+
+    if limit == 0 then
         print("No IP addresses found.")
     end
 end
 
 return M
-
