@@ -64,3 +64,5 @@ function M.report()
     end
 
 end
+
+return M
