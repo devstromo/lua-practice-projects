@@ -7,6 +7,7 @@ M.filter = ""
 local function is_valid_endpoint(endpoint)
     return endpoint:match("^/[^%s]+$") ~= nil
 end
+
 function M.set_args(args)
 
     if args.endpoint_filter and is_valid_endpoint(args.endpoint_filter) then
@@ -18,6 +19,12 @@ end
 
 function M.process_line(line)
     local endpoint = line:match("%s(/[^%s]+)%s")
+    if M.filter ~= "" and endpoint and not endpoint:find(M.filter) then
+        return -- Skip this line if it doesn't match the filter
+    end
+    if not endpoint then
+        endpoint = line:match("%s(/[^%s]+)$") -- Try to match at the end of the line
+    end
     if endpoint then
         endpoints[endpoint] = (endpoints[endpoint] or 0) + 1
     end
