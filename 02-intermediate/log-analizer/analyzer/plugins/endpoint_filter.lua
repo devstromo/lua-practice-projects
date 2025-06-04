@@ -1,6 +1,20 @@
 -- analyzer/plugins/endpoint_filter.lua
 local M = {}
 local endpoints = {}
+M.filter = ""
+
+-- Allow CLI arg like --endpoint-filter="/api/v1/users"
+local function is_valid_endpoint(endpoint)
+    return endpoint:match("^/[^%s]+$") ~= nil
+end
+function M.set_args(args)
+
+    if args.endpoint_filter and is_valid_endpoint(args.endpoint_filter) then
+        M.filter = args.endpoint_filter
+    else
+        print("Invalid endpoint filter. Must be in the format: /path/to/endpoint")
+    end
+end
 
 function M.process_line(line)
     local endpoint = line:match("%s(/[^%s]+)%s")
