@@ -31,6 +31,15 @@ function M.process_line(line)
 end
 
 function M.report()
+    if M.filter ~= "" then
+        print("\nEndpoints matching filter: " .. M.filter)
+    else
+        print("\nAll endpoints:")
+    end
+    if next(endpoints) == nil then
+        print("No endpoints found.")
+        return
+    end
     print("\nEndpoint counts:")
     local max = 0
     local max_endpoint = ""
@@ -41,9 +50,17 @@ function M.report()
             max_endpoint = endpoint
         end
     end
-    if max > 0 then
-        print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
+
+    if M.filter ~= "" then
+        print("Total matching endpoints: " .. #endpoints .. " (filtered by: " .. M.filter .. ")" .. " (" .. max ..
+                  " occurrences)")
     else
-        print("No endpoints found.")
+        print("\nMost common endpoint:")
+        if max > 0 then
+            print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
+        else
+            print("No endpoints found.")
+        end
     end
+
 end
