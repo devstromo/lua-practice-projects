@@ -55,7 +55,6 @@ function M.report()
         print("Total matching endpoints: " .. #endpoints .. " (filtered by: " .. M.filter .. ")" .. " (" .. max ..
                   " occurrences)")
     else
-        print("\nMost common endpoint:")
         if max > 0 then
             print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
         else
