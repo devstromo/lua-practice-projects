@@ -27,4 +27,13 @@ function M.report()
     end
 end
 
+function M.export_csv(f)
+    f:write("Plugin: Status Codes\n")
+    f:write("Status Code,Count\n")
+    for code, count in pairs(codes) do
+        f:write(string.format("%s,%d\n", code, count))
+    end
+    f:write("\n") -- blank line between sections
+end
+
 return M
