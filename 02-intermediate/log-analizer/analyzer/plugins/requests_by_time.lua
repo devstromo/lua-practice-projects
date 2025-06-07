@@ -113,4 +113,20 @@ function M.report()
     end
 end
 
+function M.export_csv(f)
+    f:write("Plugin: Request by time \n")
+    f:write("Timestamp,Count\n")
+    local sorted_keys = {}
+
+    for k in pairs(time_buckets) do
+        table.insert(sorted_keys, k)
+    end
+
+    table.sort(sorted_keys)
+    for _, key in ipairs(sorted_keys) do
+        f:write(string.format("%s,%d\n", key, time_buckets[key]))
+    end
+    f:write("\n")
+end
+
 return M
