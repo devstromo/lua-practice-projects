@@ -1,7 +1,7 @@
 -- analyzer/plugins/count_ip.lua
 local M = {}
 local ip_counts = {}
-M.limit = 5  -- default number of top IPs to show
+M.limit = 5 -- default number of top IPs to show
 
 function M.process_line(line)
     local ip = line:match("(%d+%.%d+%.%d+%.%d+)")
@@ -22,10 +22,15 @@ function M.report()
     -- Convert to array for sorting
     local sorted = {}
     for ip, count in pairs(ip_counts) do
-        table.insert(sorted, { ip = ip, count = count })
+        table.insert(sorted, {
+            ip = ip,
+            count = count
+        })
     end
 
-    table.sort(sorted, function(a, b) return a.count > b.count end)
+    table.sort(sorted, function(a, b)
+        return a.count > b.count
+    end)
 
     local limit = math.min(M.limit, #sorted)
     for i = 1, limit do
@@ -40,7 +45,7 @@ end
 function M.export_csv(f)
     f:write("Plugin: Count IPs\n")
     f:write("IP,Count\n")
-     for ip, count in pairs(ip_counts) do
+    for ip, count in pairs(ip_counts) do
         f:write(string.format("%s,%d\n", ip, count))
     end
     f:write("\n") -- blank line between sections
