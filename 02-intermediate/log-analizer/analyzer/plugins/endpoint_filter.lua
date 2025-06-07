@@ -64,4 +64,13 @@ function M.report()
 
 end
 
+function M.export_csv(f)
+    f:write("Plugin: Endpoint filter\n")
+    f:write("Endpoint,Count\n")
+    for endpoint, count in pairs(endpoints) do
+        f:write(string.format("%s,%d\n", endpoint, count))
+    end
+    f:write("\n") -- blank line between sections
+end
+
 return M
