@@ -37,4 +37,13 @@ function M.report()
     end
 end
 
+function M.export_csv(f)
+    f:write("Plugin: Count IPs\n")
+    f:write("IP,Count\n")
+     for ip, count in pairs(ip_counts) do
+        f:write(string.format("%s,%d\n", ip, count))
+    end
+    f:write("\n") -- blank line between sections
+end
+
 return M
