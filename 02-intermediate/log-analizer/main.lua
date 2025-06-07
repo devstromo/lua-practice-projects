@@ -18,7 +18,7 @@ local function load_plugins()
         end
     else
         -- default plugins if none specified
-        plugin_list = { "count_lines", "status_codes", "count_ip", "requests_by_time", "endpoint_filter" }
+        plugin_list = {"count_lines", "status_codes", "count_ip", "requests_by_time", "endpoint_filter"}
     end
 
     for _, name in ipairs(plugin_list) do
@@ -81,7 +81,20 @@ local function analyze_file(path)
             plugin.report()
         end
     end
-    file:close()
+    if cli_args.export then
+        local f = io.open(cli_args.export, "w")
+        if not f then
+            print("Error: Could not open CSV export file:", cli_args.export)
+            return
+        end
+        for _, plugin in ipairs(plugins) do
+            if plugin.export_csv then
+                plugin.export_csv(f)
+            end
+        end
+        f:close()
+        print("Summary exported to " .. cli_args.export)
+    end
 end
 
 print_welcome_message()
