@@ -38,16 +38,20 @@ function M.report()
     else
         print("\nAll endpoints:")
     end
+
     if next(endpoints) == nil then
         print("No endpoints found.")
         return
     end
+
     local html_data = {}
     print("\nEndpoint counts:")
     local max = 0
     local max_endpoint = ""
+
     for endpoint, count in pairs(endpoints) do
         local line = "  " .. endpoint .. ": " .. count
+        print(line)
         table.insert(html_data, line)
         if count > max then
             max = count
@@ -55,18 +59,15 @@ function M.report()
         end
     end
 
+    -- Print console message
     if M.filter ~= "" then
-        print("Total matching endpoints: " .. #endpoints .. " (filtered by: " .. M.filter .. ")" .. " (" .. max ..
-                  " occurrences)")
-        html.add_summary("Filtered Endpoint Counts", html_data)
+        print("Total matching endpoints: " .. #html_data .. " (filtered by: " .. M.filter .. ")")
     else
-        if max > 0 then
-            print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
-            html.add_summary("Filtered Endpoint Counts", html_data)
-        else
-            print("No endpoints found.")
-        end
+        print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
     end
+
+    -- Always add HTML summary if we have data
+    html.add_summary("Filtered Endpoint Counts", html_data)
 
 end
 
