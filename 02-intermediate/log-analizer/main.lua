@@ -112,3 +112,8 @@ end
 
 load_plugins()
 analyze_file(log_file_path)
+for _, plugin in ipairs(plugins) do
+    if plugin.export_html then
+        plugin.export_html()
+    end
+end

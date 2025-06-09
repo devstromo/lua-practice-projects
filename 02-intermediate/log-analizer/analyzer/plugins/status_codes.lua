@@ -2,6 +2,8 @@
 local M = {}
 local codes = {}
 
+local html = require("analyzer.plugins.html_report")
+
 function M.process_line(line)
     local code = line:match("%s(%d%d%d)%s")
     if code then
@@ -11,10 +13,12 @@ end
 
 function M.report()
     print("\nStatus code counts:")
+    local html_data = {}
     local max = 0
     local max_code = ""
     for code, count in pairs(codes) do
         print("  " .. code .. ": " .. count)
+        table.insert(html_data, line)
         if count > max then
             max = count
             max_code = code
@@ -22,6 +26,7 @@ function M.report()
     end
     if max > 0 then
         print("Most common status code: " .. max_code .. " (" .. max .. " occurrences)")
+        html.add_summary("Status Code Counts", html_data)
     else
         print("No status codes found.")
     end
