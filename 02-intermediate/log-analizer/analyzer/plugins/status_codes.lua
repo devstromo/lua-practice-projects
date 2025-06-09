@@ -25,9 +25,10 @@ function M.report()
             max_code = code
         end
     end
+    html.add_summary("Status Code Counts", html_data)
     if max > 0 then
         print("Most common status code: " .. max_code .. " (" .. max .. " occurrences)")
-        html.add_summary("Status Code Counts", html_data)
+        
     else
         print("No status codes found.")
     end
@@ -40,6 +41,14 @@ function M.export_csv(f)
         f:write(string.format("%s,%d\n", code, count))
     end
     f:write("\n") -- blank line between sections
+end
+
+function M.export_html(f)
+    if html and html.export then
+        html.export(f)
+    else
+        f:write("<!-- No HTML report available -->\n")
+    end
 end
 
 return M

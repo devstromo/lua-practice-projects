@@ -1,42 +1,27 @@
 -- analyzer/plugins/html_report.lua
+
 local M = {}
-local summary_lines = {}
 
-function M.add_summary(title, data)
-    table.insert(summary_lines, { title = title, data = data })
+local sections = {}
+
+function M.add_summary(title, lines)
+    table.insert(sections, {
+        title = title or "Untitled",
+        lines = type(lines) == "table" and lines or {}
+    })
 end
 
-function M.report()
-    print("\nHTML report will be generated if --html=output.html is provided.")
-end
-
-function M.set_args(args)
-    M.output_file = args.html
-end
-
-function M.export_html()
-    if not M.output_file then return end
-
-    local file = io.open(M.output_file, "w")
-    if not file then
-        print("Failed to write HTML report.")
-        return
-    end
-
-    file:write("<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Log Report</title></head><body>")
-    file:write("<h1>Log Analysis Report</h1>")
-
-    for _, section in ipairs(summary_lines) do
-        file:write(string.format("<h2>%s</h2><ul>", section.title))
-        for _, line in ipairs(section.data) do
-            file:write("<li>" .. line .. "</li>")
+function M.export(f)
+    f:write("<html><body>\n")
+    for _, section in ipairs(sections) do
+        f:write("<h2>" .. section.title .. "</h2>\n")
+        f:write("<pre>\n")
+        for _, line in ipairs(section.lines) do
+            f:write(line .. "\n")
         end
-        file:write("</ul>")
+        f:write("</pre>\n")
     end
-
-    file:write("</body></html>")
-    file:close()
-    print("✅ HTML report written to: " .. M.output_file)
+    f:write("</body></html>\n")
 end
 
 return M

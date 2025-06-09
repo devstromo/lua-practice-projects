@@ -98,12 +98,12 @@ local function analyze_file(path)
     if cli_args.html then
         local f = io.open(cli_args.html, "w")
         if not f then
-            print("Error: Could not open HTML export file:", cli_args.export)
+            print("Error: Could not open HTML export file:", cli_args.html)
             return
         end
         for _, plugin in ipairs(plugins) do
             if plugin.export_html then
-                plugin.export_html()
+                plugin.export_html(f) -- ✅ pass file handle
             end
         end
         f:close()
