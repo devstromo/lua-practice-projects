@@ -44,7 +44,6 @@ function M.report()
         return
     end
 
-    local html_data = {}
     print("\nEndpoint counts:")
     local max = 0
     local max_endpoint = ""
@@ -52,7 +51,6 @@ function M.report()
     for endpoint, count in pairs(endpoints) do
         local line = "  " .. endpoint .. ": " .. count
         print(line)
-        table.insert(html_data, line)
         if count > max then
             max = count
             max_endpoint = endpoint
@@ -65,10 +63,6 @@ function M.report()
     else
         print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
     end
-
-    -- Always add HTML summary if we have data
-    html.add_summary("Filtered Endpoint Counts", html_data)
-
 end
 
 function M.export_csv(f)
