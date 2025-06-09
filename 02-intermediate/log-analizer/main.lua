@@ -95,6 +95,21 @@ local function analyze_file(path)
         f:close()
         print("Summary exported to " .. cli_args.export)
     end
+    if cli_args.html then
+        local f = io.open(cli_args.html, "w")
+        if not f then
+            print("Error: Could not open HTML export file:", cli_args.export)
+            return
+        end
+        for _, plugin in ipairs(plugins) do
+            if plugin.export_html then
+                plugin.export_html()
+            end
+        end
+        f:close()
+        print("Summary exported to " .. cli_args.html)
+    end
+
 end
 
 print_welcome_message()
@@ -112,8 +127,4 @@ end
 
 load_plugins()
 analyze_file(log_file_path)
-for _, plugin in ipairs(plugins) do
-    if plugin.export_html then
-        plugin.export_html()
-    end
-end
+
