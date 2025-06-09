@@ -3,6 +3,8 @@ local M = {}
 local endpoints = {}
 M.filter = ""
 
+local html = require("analyzer.plugins.html_report")
+
 -- Allow CLI arg like --endpoint-filter="/api/v1/users"
 local function is_valid_endpoint(endpoint)
     return endpoint:match("^/[^%s]+$") ~= nil
@@ -40,11 +42,13 @@ function M.report()
         print("No endpoints found.")
         return
     end
+    local html_data = {}
     print("\nEndpoint counts:")
     local max = 0
     local max_endpoint = ""
     for endpoint, count in pairs(endpoints) do
-        print("  " .. endpoint .. ": " .. count)
+        local line = "  " .. endpoint .. ": " .. count
+        table.insert(html_data, line)
         if count > max then
             max = count
             max_endpoint = endpoint
@@ -54,9 +58,11 @@ function M.report()
     if M.filter ~= "" then
         print("Total matching endpoints: " .. #endpoints .. " (filtered by: " .. M.filter .. ")" .. " (" .. max ..
                   " occurrences)")
+        html.add_summary("Filtered Endpoint Counts", html_data)
     else
         if max > 0 then
             print("Most common endpoint: " .. max_endpoint .. " (" .. max .. " occurrences)")
+            html.add_summary("Filtered Endpoint Counts", html_data)
         else
             print("No endpoints found.")
         end
