@@ -18,6 +18,7 @@ function M.report()
     local max_code = ""
     for code, count in pairs(codes) do
         print("  " .. code .. ": " .. count)
+        local line = "  " .. code .. ": " .. count
         table.insert(html_data, line)
         if count > max then
             max = count
