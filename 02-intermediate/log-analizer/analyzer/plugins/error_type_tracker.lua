@@ -24,4 +24,11 @@ function M.report()
     html_report.add_summary("HTTP Error Type Summary", lines)
 end
 
+function M.export_csv(f)
+    f:write("Plugin: Error Type Tracker\n")
+    f:write(string.format("4xx,%d\n", M.counts["4xx"]))
+    f:write(string.format("5xx,%d\n", M.counts["5xx"]))
+    f:write("\n") -- blank line between sections
+end
+
 return M
