@@ -3,8 +3,6 @@ local M = {}
 local endpoints = {}
 M.filter = ""
 
-local html = require("analyzer.plugins.html_report")
-
 -- Allow CLI arg like --endpoint-filter="/api/v1/users"
 local function is_valid_endpoint(endpoint)
     return endpoint:match("^/[^%s]+$") ~= nil
