@@ -18,7 +18,14 @@ local function load_plugins()
         end
     else
         -- default plugins if none specified
-        plugin_list = {"count_lines", "status_codes", "count_ip", "requests_by_time", "endpoint_filter"}
+        plugin_list = {
+            "count_lines", 
+            "status_codes", 
+            "count_ip", 
+            "requests_by_time", 
+            "endpoint_filter",
+            "error_type_tracker"
+        }
     end
 
     for _, name in ipairs(plugin_list) do
