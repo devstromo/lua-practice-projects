@@ -16,6 +16,13 @@ function M.process(status_code)
     end
 end
 
+function M.process_line(line)
+    local status = line:match("%s(%d%d%d)%s")
+    if status then
+        M.process(status)
+    end
+end
+
 function M.report()
     local lines = {
         string.format("Client Errors (4xx): %d", M.counts["4xx"]),
