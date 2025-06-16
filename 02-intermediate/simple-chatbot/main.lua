@@ -16,6 +16,17 @@ local function normalize(text)
     return text:lower():gsub("%p", ""):gsub("^%s*(.-)%s*$", "%1")
 end
 
+local function get_formatted_timestamp()
+    -- Get current time
+    local now = os.time()
+    local formatted = os.date("[%Y/%m/%d %H:%M:%S", now)
+
+    -- Get sub-second precision using socket (optional)
+    local millis = math.floor((os.clock() % 1) * 10000) -- 4 digits for .ssss
+
+    return string.format("%s.%04d]", formatted, millis)
+end
+
 -- Bot logic
 local responses = {
     hello = "Hi there!",
