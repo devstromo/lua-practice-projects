@@ -78,7 +78,8 @@ while true do
     local reply = bot(user_input)
     print("Bot:", reply)
     if cli_args["save-chat"] then
-        log_file:write(string.format("%s User: %s\nBot: %s\n", get_formatted_timestamp(), user_input, reply))
+        local formatted_time = get_formatted_timestamp()
+        log_file:write(string.format("%s User: %s\n%s Bot: %s\n", formatted_time, user_input, formatted_time, reply))
         log_file:flush()
     end
 end
