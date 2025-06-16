@@ -4,6 +4,11 @@ for _, arg_str in ipairs(arg or {}) do
     local key, val = arg_str:match("^%-%-(.-)=(.+)$")
     if key and val then
         cli_args[key] = val
+    else
+        key = arg_str:match("^%-%-(.+)$")
+        if key then
+            cli_args[key] = true
+        end
     end
 end
 
@@ -64,6 +69,8 @@ while true do
     local reply = bot(user_input)
     print("Bot:", reply)
     if cli_args.save_chat then
-        f:write(string.format("User: %s\nBot: %s\n", user_input, reply))
+        log_file:write(string.format("User: %s\nBot: %s\n", user_input, reply))
+        log_file:flush()
     end
 end
+log_file:close()
