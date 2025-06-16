@@ -68,7 +68,7 @@ while true do
 
     local reply = bot(user_input)
     print("Bot:", reply)
-    if cli_args.save_chat then
+    if cli_args["save-chat"] then
         log_file:write(string.format("User: %s\nBot: %s\n", user_input, reply))
         log_file:flush()
     end
