@@ -82,7 +82,7 @@ if not log_file then
     print("Exiting due to log file error.")
     return
 end
-
+local chat_history = {}
 -- Chat loop
 print("ChatBot is running. Type 'exit' or 'bye' to quit.")
 while true do
@@ -98,12 +98,26 @@ while true do
         break
     end
 
+    if user_input == "/log" then
+        print("Chat History:")
+        for _, entry in ipairs(chat_history) do
+            print("You: " .. entry.user)
+            print("Bot: " .. entry.bot)
+        end
+        goto continue
+    end
+
     local reply = bot(user_input, response_data)
     print("Bot:", reply)
+    table.insert(chat_history, {
+        user = user_input,
+        bot = reply
+    })
     if cli_args["save-chat"] then
         local formatted_time = get_formatted_timestamp()
         log_file:write(string.format("%s User: %s\n%s Bot: %s\n", formatted_time, user_input, formatted_time, reply))
         log_file:flush()
     end
+    ::continue::
 end
 log_file:close()
