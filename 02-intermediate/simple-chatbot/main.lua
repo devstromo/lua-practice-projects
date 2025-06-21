@@ -12,6 +12,8 @@ for _, arg_str in ipairs(arg or {}) do
     end
 end
 
+math.randomseed(os.time())
+
 local function normalize(text)
     return text:lower():gsub("%p", ""):gsub("^%s*(.-)%s*$", "%1")
 end
@@ -25,24 +27,46 @@ local function get_formatted_timestamp()
     return string.format("%s.%04d]", formatted, millis)
 end
 
-local ok, responses = pcall(require, "responses")
+local ok, response_data = pcall(require, "responses")
 if not ok then
-    print("Error loading responses:", responses)
+    print("Error loading responses:", response_data)
     return
 end
 
-local function bot(input)
+-- local function bot(input)
+--     local msg = normalize(input)
+
+--     for reply, keywords in pairs(responses) do
+--         for _, keyword in ipairs(keywords) do
+--             if msg:find(keyword) then
+--                 return reply
+--             end
+--         end
+--     end
+
+--     return "Sorry, I don't understand."
+-- end
+
+local function bot(input, response_data)
     local msg = normalize(input)
 
-    for reply, keywords in pairs(responses) do
-        for _, keyword in ipairs(keywords) do
-            if msg:find(keyword) then
-                return reply
+    for _, category in pairs(response_data) do
+        if category.keywords then
+            for _, keyword in ipairs(category.keywords) do
+                if msg:find(keyword) then
+                    local responses = category.replies
+                    return responses[math.random(#responses)]
+                end
             end
         end
     end
 
-    return "Sorry, I don't understand."
+    local fallback = response_data.fallback
+    if fallback and fallback.replies then
+        return fallback.replies[math.random(#fallback.replies)]
+    else
+        return "Sorry, I don't understand."
+    end
 end
 
 local function load_log_file()
@@ -82,7 +106,7 @@ while true do
         break
     end
 
-    local reply = bot(user_input)
+    local reply = bot(user_input, response_data)
     print("Bot:", reply)
     if cli_args["save-chat"] then
         local formatted_time = get_formatted_timestamp()
