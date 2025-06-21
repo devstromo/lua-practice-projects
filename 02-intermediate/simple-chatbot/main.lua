@@ -107,6 +107,12 @@ while true do
         goto continue
     end
 
+    if user_input == "/clear" then
+        chat_history = {}
+        print("Chat history cleared.")
+        goto continue
+    end
+
     local reply = bot(user_input, response_data)
     print("Bot:", reply)
     table.insert(chat_history, {
