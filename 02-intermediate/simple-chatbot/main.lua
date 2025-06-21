@@ -27,20 +27,23 @@ end
 
 -- Bot logic
 local responses = {
-    hello = "Hi there!",
-    hi = "Hello!",
-    how = "I'm just a bot, but I'm doing fine!",
-    thanks = "You're welcome!",
-    ["whats your name"] = "I'm LuaBot!"
+    ["Hi there!"] = {"hello", "hi", "hey"},
+    ["I'm just a bot, but I'm doing fine!"] = {"how are you", "how", "hows it going"},
+    ["You're welcome!"] = {"thanks", "thank you"},
+    ["I'm LuaBot!"] = {"whats your name", "your name"}
 }
 
 local function bot(input)
     local msg = normalize(input)
-    for keyword, reply in pairs(responses) do
-        if msg:find(keyword) then
-            return reply
+
+    for reply, keywords in pairs(responses) do
+        for _, keyword in ipairs(keywords) do
+            if msg:find(keyword) then
+                return reply
+            end
         end
     end
+
     return "Sorry, I don't understand."
 end
 
