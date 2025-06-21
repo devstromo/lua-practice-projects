@@ -25,13 +25,11 @@ local function get_formatted_timestamp()
     return string.format("%s.%04d]", formatted, millis)
 end
 
--- Bot logic
-local responses = {
-    ["Hi there!"] = {"hello", "hi", "hey"},
-    ["I'm just a bot, but I'm doing fine!"] = {"how are you", "how", "hows it going"},
-    ["You're welcome!"] = {"thanks", "thank you"},
-    ["I'm LuaBot!"] = {"whats your name", "your name"}
-}
+local ok, responses = pcall(require, "responses")
+if not ok then
+    print("Error loading responses:", responses)
+    return
+end
 
 local function bot(input)
     local msg = normalize(input)
