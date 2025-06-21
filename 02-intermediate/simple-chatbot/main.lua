@@ -33,22 +33,13 @@ if not ok then
     return
 end
 
--- local function bot(input)
---     local msg = normalize(input)
-
---     for reply, keywords in pairs(responses) do
---         for _, keyword in ipairs(keywords) do
---             if msg:find(keyword) then
---                 return reply
---             end
---         end
---     end
-
---     return "Sorry, I don't understand."
--- end
-
 local function bot(input, response_data)
     local msg = normalize(input)
+
+    -- Check slash commands first
+    if response_data.slash_commands and response_data.slash_commands[input] then
+        return response_data.slash_commands[input]
+    end
 
     for _, category in pairs(response_data) do
         if category.keywords then
@@ -61,6 +52,7 @@ local function bot(input, response_data)
         end
     end
 
+    -- Fallback
     local fallback = response_data.fallback
     if fallback and fallback.replies then
         return fallback.replies[math.random(#fallback.replies)]

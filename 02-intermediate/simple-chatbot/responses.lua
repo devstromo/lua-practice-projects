@@ -18,6 +18,16 @@ return {
     },
     fallback = {
         replies = {"Sorry, I don't understand.", "Can you rephrase that?", "Hmm, I didn't catch that."}
+    },
+    slash_commands = {
+        ["/help"] = [[
+Available commands:
+/help – Show this help message
+Type any greeting like "hello" or "hi"
+Say "thanks" to see a gratitude reply
+Ask "what's your name" or similar
+Type 'exit' or 'bye' to quit the bot
+]]
     }
 }
 
