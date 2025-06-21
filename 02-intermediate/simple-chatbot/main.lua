@@ -45,12 +45,18 @@ local function bot(input)
 end
 
 local function load_log_file()
-    local log_file_path = cli_args.log_file or "chat_log.txt"
+    local date_str = os.date("%Y_%m_%d")
+    local default_filename = date_str .. "_chat_log.txt"
+
+    local log_file_path = cli_args.log_file or default_filename
+
     local file, err = io.open(log_file_path, "a+")
     if not file then
         print("Error opening log file:", err)
         return nil
     end
+
+    print("Logging to:", log_file_path)
     return file
 end
 
