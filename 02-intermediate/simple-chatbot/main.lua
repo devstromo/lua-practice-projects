@@ -1,4 +1,5 @@
 -- A simple chatbot that responds to user input with predefined answers.
+local MAX_HISTORY = 50
 local cli_args = {}
 for _, arg_str in ipairs(arg or {}) do
     local key, val = arg_str:match("^%-%-(.-)=(.+)$")
@@ -119,6 +120,9 @@ while true do
         user = user_input,
         bot = reply
     })
+    while #chat_history > MAX_HISTORY do
+        table.remove(chat_history, 1)
+    end
     if cli_args["save-chat"] then
         local formatted_time = get_formatted_timestamp()
         log_file:write(string.format("%s User: %s\n%s Bot: %s\n", formatted_time, user_input, formatted_time, reply))
