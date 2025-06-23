@@ -84,6 +84,25 @@ if not log_file then
     return
 end
 local chat_history = {}
+local function save_chat_history_to_file()
+    if #chat_history == 0 then
+        return
+    end
+
+    local timestamp = os.date("%Y%m%d_%H%M%S")
+    local filename = string.format("session_%s.txt", timestamp)
+    local file, err = io.open(filename, "w")
+    if not file then
+        print("Error saving session:", err)
+        return
+    end
+
+    for _, entry in ipairs(chat_history) do
+        file:write(string.format("User: %s\nBot: %s\n\n", entry.user, entry.bot))
+    end
+    file:close()
+    print("✅ Chat history saved to:", filename)
+end
 -- Chat loop
 print("ChatBot is running. Type 'exit' or 'bye' to quit.")
 while true do
@@ -94,7 +113,7 @@ while true do
     end -- handle Ctrl+D or EOF
 
     local msg = normalize(user_input)
-    if msg == "exit" or msg == "bye" then
+    if msg == "/exit" or msg == "bye" or msg == "exit" or msg == ":q" then
         print("Bot: Goodbye!")
         break
     end
@@ -109,8 +128,9 @@ while true do
     end
 
     if user_input == "/clear" then
+        save_chat_history_to_file()
         chat_history = {}
-        print("Chat history cleared.")
+        print("Chat history cleared and saved.")
         goto continue
     end
 
