@@ -157,7 +157,8 @@ while true do
     end -- handle Ctrl+D or EOF
 
     local msg = normalize(user_input)
-    if msg == "/exit" or msg == "bye" or msg == "exit" or msg == ":q" then
+    print("Log message:", msg)
+    if msg == "/exit" or msg == "bye" or msg == "exit" then
         print("Bot: Goodbye!")
         break
     end
