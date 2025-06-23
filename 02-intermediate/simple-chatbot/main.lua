@@ -83,7 +83,9 @@ if not log_file then
     print("Exiting due to log file error.")
     return
 end
+
 local chat_history = {}
+
 local function save_chat_history_to_file()
     if #chat_history == 0 then
         return
@@ -103,6 +105,48 @@ local function save_chat_history_to_file()
     file:close()
     print("✅ Chat history saved to:", filename)
 end
+
+local function show_summary()
+    local total_lines = #chat_history
+    local unique_user_inputs = {}
+    local keywords_used = {}
+
+    for _, entry in ipairs(chat_history) do
+        unique_user_inputs[entry.user] = true
+
+        -- extract basic keywords (split by space, you can improve later)
+        for word in entry.user:lower():gmatch("%w+") do
+            keywords_used[word] = (keywords_used[word] or 0) + 1
+        end
+    end
+
+    local keyword_list = {}
+    for k, v in pairs(keywords_used) do
+        table.insert(keyword_list, {
+            word = k,
+            count = v
+        })
+    end
+    table.sort(keyword_list, function(a, b)
+        return a.count > b.count
+    end)
+
+    print("\n📊 Chat Summary:")
+    print("Total exchanges:", total_lines)
+    print("Unique user inputs:", tostring(#(function(tbl)
+        local count = 0
+        for _ in pairs(tbl) do
+            count = count + 1
+        end
+        return {count}
+    end)(unique_user_inputs)))
+    print("Top keywords used:")
+    for i = 1, math.min(5, #keyword_list) do
+        print("  " .. keyword_list[i].word .. " (" .. keyword_list[i].count .. ")")
+    end
+    print()
+end
+
 -- Chat loop
 print("ChatBot is running. Type 'exit' or 'bye' to quit.")
 while true do
@@ -128,7 +172,10 @@ while true do
     end
 
     if user_input == "/clear" then
-        save_chat_history_to_file()
+        if #chat_history > 0 then
+            show_summary()
+            save_chat_history_to_file()
+        end
         chat_history = {}
         print("Chat history cleared and saved.")
         goto continue
