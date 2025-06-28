@@ -110,11 +110,15 @@ local function show_summary()
     local total_lines = #chat_history
     local unique_user_inputs = {}
     local keywords_used = {}
+    local bot_responses = {}
 
     for _, entry in ipairs(chat_history) do
         unique_user_inputs[entry.user] = true
 
-        -- extract basic keywords (split by space, you can improve later)
+        -- Count bot responses
+        bot_responses[entry.bot] = (bot_responses[entry.bot] or 0) + 1
+
+        -- extract basic keywords (split by space, improve later with NLP)
         for word in entry.user:lower():gmatch("%w+") do
             keywords_used[word] = (keywords_used[word] or 0) + 1
         end
@@ -131,18 +135,35 @@ local function show_summary()
         return a.count > b.count
     end)
 
+    local bot_list = {}
+    for reply, count in pairs(bot_responses) do
+        table.insert(bot_list, {
+            reply = reply,
+            count = count
+        })
+    end
+    table.sort(bot_list, function(a, b)
+        return a.count > b.count
+    end)
+
     print("\n📊 Chat Summary:")
     print("Total exchanges:", total_lines)
-    print("Unique user inputs:", tostring(#(function(tbl)
-        local count = 0
+    print("Unique user inputs:", (function(tbl)
+        local c = 0
         for _ in pairs(tbl) do
-            count = count + 1
+            c = c + 1
         end
-        return {count}
-    end)(unique_user_inputs)))
-    print("Top keywords used:")
+        return c
+    end)(unique_user_inputs))
+
+    print("\nTop keywords used:")
     for i = 1, math.min(5, #keyword_list) do
         print("  " .. keyword_list[i].word .. " (" .. keyword_list[i].count .. ")")
+    end
+
+    print("\nTop bot replies:")
+    for i = 1, math.min(5, #bot_list) do
+        print("  \"" .. bot_list[i].reply .. "\" (" .. bot_list[i].count .. ")")
     end
     print()
 end
