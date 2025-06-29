@@ -36,6 +36,7 @@ local function convert_markdown_to_html(input_file, output_file)
     print("Conversion complete. Output written to:", output_file)
 end
 
+local source_file = ""
 print("Markdown to HTML Converter is running...")
 if not cli_args.source then
     io.write("Input file route: ")
@@ -44,8 +45,10 @@ if not cli_args.source then
         print("No input file provided. Exiting.")
         return
     end
+    source_file = user_input -- assign if valid input
 else
     print("Input file:", cli_args.source)
+    source_file = cli_args.source
 end
 
 print("Output file:", cli_args.output or "output.html")
