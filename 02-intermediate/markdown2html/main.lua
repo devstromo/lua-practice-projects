@@ -40,6 +40,10 @@ print("Markdown to HTML Converter is running...")
 if not cli_args.source then
     io.write("Input file route: ")
     local user_input = io.read()
+    if not user_input then
+        print("No input file provided. Exiting.")
+        return
+    end
 else
     print("Input file:", cli_args.source)
 end
