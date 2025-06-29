@@ -35,3 +35,17 @@ local function convert_markdown_to_html(input_file, output_file)
 
     print("Conversion complete. Output written to:", output_file)
 end
+
+print("Markdown to HTML Converter is running...")
+if not cli_args.source then
+    io.write("Input file route: ")
+    local user_input = io.read()
+else
+    print("Input file:", cli_args.source)
+end
+
+print("Output file:", cli_args.output or "output.html")
+
+local source_file = cli_args.source or "input.md"
+local output_file = cli_args.output or "output.html"
+convert_markdown_to_html(source_file, output_file)
