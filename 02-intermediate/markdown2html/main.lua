@@ -11,6 +11,37 @@ for _, arg_str in ipairs(arg or {}) do
     end
 end
 
+local function markdown_to_html(markdown)
+    local html = ""
+
+    for line in markdown:gmatch("[^\r\n]+") do
+        local converted = line
+
+        -- Headers
+        converted = converted:gsub("^#%s*(.+)", "<h1>%1</h1>")
+        converted = converted:gsub("^##%s*(.+)", "<h2>%1</h2>")
+        converted = converted:gsub("^###%s*(.+)", "<h3>%1</h3>")
+
+        -- Bold
+        converted = converted:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
+
+        -- Italic
+        converted = converted:gsub("%*(.-)%*", "<em>%1</em>")
+
+        -- Inline code
+        converted = converted:gsub("`(.-)`", "<code>%1</code>")
+
+        -- If not converted to header, wrap as paragraph
+        if not (converted:match("^<h[1-3]>")) then
+            converted = "<p>" .. converted .. "</p>"
+        end
+
+        html = html .. converted .. "\n"
+    end
+
+    return html
+end
+
 -- Mardown to HTML conversion function
 local function convert_markdown_to_html(input_file, output_file)
     local input = io.open(input_file, "r")
