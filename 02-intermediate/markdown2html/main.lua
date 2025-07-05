@@ -12,7 +12,7 @@ for _, arg_str in ipairs(arg or {}) do
 end
 
 local function markdown_to_html(markdown)
-    local html = ""
+    local body = ""
 
     for line in markdown:gmatch("[^\r\n]+") do
         local converted = line
@@ -36,8 +36,26 @@ local function markdown_to_html(markdown)
             converted = "<p>" .. converted .. "</p>"
         end
 
-        html = html .. converted .. "\n"
+        body = body .. converted .. "\n"
     end
+
+    -- Wrap with basic HTML structure
+    local html = [[
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Markdown Output</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
+        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+]] .. body .. [[
+</body>
+</html>
+]]
 
     return html
 end
