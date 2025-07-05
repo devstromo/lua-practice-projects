@@ -53,6 +53,6 @@ end
 
 print("Output file:", cli_args.output or "output.html")
 
-local source_file = cli_args.source or "input.md"
+local source_file = source_file or "input.md"
 local output_file = cli_args.output or "output.html"
 convert_markdown_to_html(source_file, output_file)
