@@ -143,27 +143,35 @@ end
 local function markdown_to_html(markdown)
     local body_lines = {}
     local lines = {}
+
+    -- Helper function for repeated indentation
+    local function indent(level)
+        return string.rep(indent_unit, level)
+    end
+
+    -- Split markdown into lines
     for line in markdown:gmatch("[^\r\n]+") do
         table.insert(lines, line)
     end
 
+    -- Process each line
     local i = 1
     while i <= #lines do
         local line = lines[i]
         if line:match("^%d+%.%s+") then
             local list_block, next_index = parse_ordered_list(lines, i)
             for _, l in ipairs(list_block) do
-                table.insert(body_lines, indent_unit .. l)
+                table.insert(body_lines, indent(2) .. l) -- indent inside <body>
             end
             i = next_index
         elseif line:match("^%-[%s]+") then
             local ul_block, next_index = parse_unordered_list(lines, i)
             for _, l in ipairs(ul_block) do
-                table.insert(body_lines, indent_unit .. l)
+                table.insert(body_lines, indent(2) .. l)
             end
             i = next_index
         elseif line:match("^>+") then
-            local parsed_blockquotes, next_index = parse_blockquotes(lines, i, indent_unit)
+            local parsed_blockquotes, next_index = parse_blockquotes(lines, i, indent(2))
             for _, bq_line in ipairs(parsed_blockquotes) do
                 table.insert(body_lines, bq_line)
             end
@@ -171,34 +179,37 @@ local function markdown_to_html(markdown)
         else
             local header = parse_headers(line)
             if header == line then
-                table.insert(body_lines, indent_unit .. parse_paragraph(line))
+                table.insert(body_lines, indent(2) .. parse_paragraph(line))
             else
-                table.insert(body_lines, indent_unit .. header)
+                table.insert(body_lines, indent(2) .. header)
             end
             i = i + 1
         end
     end
 
-    -- Assemble HTML with indent_unit applied where appropriate
-    local html = string.format([[
-<!DOCTYPE html>
-<html lang="en">
-%s<head>
-%s<meta charset="UTF-8">
-%s<title>Markdown Output</title>
-%s<style>
-%sbody { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
-%scode { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
-%s</style>
-%s</head>
-%s<body>
-%s
-%s</body>
-</html>
-]], indent_unit, indent_unit, indent_unit, indent_unit, indent_unit, indent_unit, indent_unit, indent_unit, indent_unit,
-        table.concat(body_lines, "\n"), indent_unit)
+    -- Assemble HTML with correct nested indentation
+    local html_lines = {}
+    table.insert(html_lines, "<!DOCTYPE html>")
+    table.insert(html_lines, "<html lang=\"en\">")
+    table.insert(html_lines, indent(1) .. "<head>")
+    table.insert(html_lines, indent(2) .. "<meta charset=\"UTF-8\">")
+    table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
+    table.insert(html_lines, indent(2) .. "<style>")
+    table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
+    table.insert(html_lines, indent(3) .. "code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }")
+    table.insert(html_lines, indent(2) .. "</style>")
+    table.insert(html_lines, indent(1) .. "</head>")
+    table.insert(html_lines, indent(1) .. "<body>")
 
-    return html
+    -- Insert parsed body content
+    for _, line in ipairs(body_lines) do
+        table.insert(html_lines, line)
+    end
+
+    table.insert(html_lines, indent(1) .. "</body>")
+    table.insert(html_lines, "</html>")
+
+    return table.concat(html_lines, "\n")
 end
 
 -- Mardown to HTML conversion function
