@@ -19,6 +19,7 @@ local function parse_inline_formatting(text)
 end
 
 local function parse_headers(line)
+    line = line:gsub("^####%s*(.+)", "<h4>%1</h4>")
     line = line:gsub("^###%s*(.+)", "<h3>%1</h3>")
     line = line:gsub("^##%s*(.+)", "<h2>%1</h2>")
     line = line:gsub("^#%s*(.+)", "<h1>%1</h1>")
