@@ -12,7 +12,8 @@ for _, arg_str in ipairs(arg or {}) do
 end
 
 local function markdown_to_html(markdown)
-    local body = ""
+    local body_lines = {}
+    local indent = "    " -- 4 spaces for indentation
 
     for line in markdown:gmatch("[^\r\n]+") do
         local converted = line
@@ -36,10 +37,10 @@ local function markdown_to_html(markdown)
             converted = "<p>" .. converted .. "</p>"
         end
 
-        body = body .. converted .. "\n"
+        table.insert(body_lines, indent .. converted)
     end
 
-    -- Wrap with basic HTML structure
+    -- Wrap with basic HTML structure with indentation
     local html = [[
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +53,7 @@ local function markdown_to_html(markdown)
     </style>
 </head>
 <body>
-]] .. body .. [[
+]] .. table.concat(body_lines, "\n") .. [[
 </body>
 </html>
 ]]
