@@ -144,17 +144,17 @@ local function markdown_to_html(markdown)
         if line:match("^%d+%.%s+") then
             local list_block, next_index = parse_ordered_list(lines, i)
             for _, l in ipairs(list_block) do
-                table.insert(body_lines, l)
+                table.insert(body_lines, "        " .. l) -- indent inside body
             end
             i = next_index
         elseif line:match("^%-[%s]+") then
             local ul_block, next_index = parse_unordered_list(lines, i)
             for _, l in ipairs(ul_block) do
-                table.insert(body_lines, l)
+                table.insert(body_lines, "        " .. l) -- indent inside body
             end
             i = next_index
         elseif line:match("^>+") then
-            local parsed_blockquotes, next_index = parse_blockquotes(lines, i, "    ") -- assuming 4 spaces base indent
+            local parsed_blockquotes, next_index = parse_blockquotes(lines, i, "        ") -- indent base inside body
             for _, bq_line in ipairs(parsed_blockquotes) do
                 table.insert(body_lines, bq_line)
             end
@@ -162,29 +162,29 @@ local function markdown_to_html(markdown)
         else
             local header = parse_headers(line)
             if header == line then
-                table.insert(body_lines, parse_paragraph(line))
+                table.insert(body_lines, "        " .. parse_paragraph(line))
             else
-                table.insert(body_lines, "    " .. header)
+                table.insert(body_lines, "        " .. header)
             end
             i = i + 1
         end
     end
 
-    -- Wrap with HTML structure
+    -- Assemble HTML with proper indent levels
     local html = [[
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Markdown Output</title>
-    <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
-        code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
-    </style>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Markdown Output</title>
+        <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }
+            code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+        </style>
+    </head>
+    <body>
 ]] .. table.concat(body_lines, "\n") .. "\n" .. [[
-</body>
+    </body>
 </html>
 ]]
 
