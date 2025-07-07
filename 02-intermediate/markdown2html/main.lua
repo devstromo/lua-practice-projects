@@ -140,6 +140,36 @@ local function parse_blockquotes(lines, start_index, base_indent)
     return result, i
 end
 
+local function build_html_document(body_lines)
+    local html_lines = {}
+
+    -- Nested indentation helper within build_html_document
+    local function indent(level)
+        return string.rep(indent_unit, level)
+    end
+
+    table.insert(html_lines, "<!DOCTYPE html>")
+    table.insert(html_lines, "<html lang=\"en\">")
+    table.insert(html_lines, indent(1) .. "<head>")
+    table.insert(html_lines, indent(2) .. "<meta charset=\"UTF-8\">")
+    table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
+    table.insert(html_lines, indent(2) .. "<style>")
+    table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
+    table.insert(html_lines, indent(3) .. "code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }")
+    table.insert(html_lines, indent(2) .. "</style>")
+    table.insert(html_lines, indent(1) .. "</head>")
+    table.insert(html_lines, indent(1) .. "<body>")
+
+    for _, line in ipairs(body_lines) do
+        table.insert(html_lines, line)
+    end
+
+    table.insert(html_lines, indent(1) .. "</body>")
+    table.insert(html_lines, "</html>")
+
+    return table.concat(html_lines, "\n")
+end
+
 local function markdown_to_html(markdown)
     local body_lines = {}
     local lines = {}
@@ -187,29 +217,7 @@ local function markdown_to_html(markdown)
         end
     end
 
-    -- Assemble HTML with correct nested indentation
-    local html_lines = {}
-    table.insert(html_lines, "<!DOCTYPE html>")
-    table.insert(html_lines, "<html lang=\"en\">")
-    table.insert(html_lines, indent(1) .. "<head>")
-    table.insert(html_lines, indent(2) .. "<meta charset=\"UTF-8\">")
-    table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
-    table.insert(html_lines, indent(2) .. "<style>")
-    table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
-    table.insert(html_lines, indent(3) .. "code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; }")
-    table.insert(html_lines, indent(2) .. "</style>")
-    table.insert(html_lines, indent(1) .. "</head>")
-    table.insert(html_lines, indent(1) .. "<body>")
-
-    -- Insert parsed body content
-    for _, line in ipairs(body_lines) do
-        table.insert(html_lines, line)
-    end
-
-    table.insert(html_lines, indent(1) .. "</body>")
-    table.insert(html_lines, "</html>")
-
-    return table.concat(html_lines, "\n")
+    return build_html_document(body_lines)
 end
 
 -- Mardown to HTML conversion function
