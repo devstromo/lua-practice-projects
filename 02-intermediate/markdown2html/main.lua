@@ -87,10 +87,12 @@ local function parse_paragraph(line)
     return "    <p>" .. line .. "</p>"
 end
 
-local function parse_blockquotes(lines, start_index)
+local function parse_blockquotes(lines, start_index, base_indent)
     local result = {}
     local i = start_index
     local blockquote_stack = {}
+
+    base_indent = base_indent or "" -- default to empty string if not passed
 
     while i <= #lines do
         local line = lines[i]
@@ -102,26 +104,27 @@ local function parse_blockquotes(lines, start_index)
         local depth = #level
         content = parse_inline_formatting(content)
 
-        -- Close previously deeper levels
+        -- Close deeper blockquotes
         while #blockquote_stack > depth do
-            table.insert(result, string.rep("    ", #blockquote_stack) .. "</blockquote>")
+            table.insert(result, base_indent .. string.rep("    ", #blockquote_stack - 1) .. "</blockquote>")
             table.remove(blockquote_stack)
         end
 
-        -- Open new blockquote levels
+        -- Open new blockquotes
         while #blockquote_stack < depth do
-            table.insert(result, string.rep("    ", #blockquote_stack) .. "<blockquote>")
+            table.insert(result, base_indent .. string.rep("    ", #blockquote_stack) .. "<blockquote>")
             table.insert(blockquote_stack, true)
         end
 
-        -- Add content inside the deepest blockquote
-        table.insert(result, string.rep("    ", #blockquote_stack) .. "<p>" .. content .. "</p>")
+        -- Add content inside current depth
+        table.insert(result, base_indent .. string.rep("    ", #blockquote_stack) .. "<p>" .. content .. "</p>")
+
         i = i + 1
     end
 
-    -- Close remaining open blockquotes
+    -- Close any remaining open blockquotes
     while #blockquote_stack > 0 do
-        table.insert(result, string.rep("    ", #blockquote_stack) .. "</blockquote>")
+        table.insert(result, base_indent .. string.rep("    ", #blockquote_stack - 1) .. "</blockquote>")
         table.remove(blockquote_stack)
     end
 
@@ -151,9 +154,9 @@ local function markdown_to_html(markdown)
             end
             i = next_index
         elseif line:match("^>+") then
-            local bq_block, next_index = parse_blockquotes(lines, i)
-            for _, l in ipairs(bq_block) do
-                table.insert(body_lines, l)
+            local parsed_blockquotes, next_index = parse_blockquotes(lines, i, "    ") -- assuming 4 spaces base indent
+            for _, bq_line in ipairs(parsed_blockquotes) do
+                table.insert(body_lines, bq_line)
             end
             i = next_index
         else
