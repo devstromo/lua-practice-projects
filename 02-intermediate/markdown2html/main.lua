@@ -87,6 +87,47 @@ local function parse_paragraph(line)
     return "    <p>" .. line .. "</p>"
 end
 
+local function parse_blockquotes(lines, start_index)
+    local result = {}
+    local i = start_index
+    local blockquote_stack = {}
+
+    while i <= #lines do
+        local line = lines[i]
+        local level, content = line:match("^(>+)%s*(.*)")
+        if not level then
+            break
+        end
+
+        local depth = #level
+        content = parse_inline_formatting(content)
+
+        -- Close previously deeper levels
+        while #blockquote_stack > depth do
+            table.insert(result, string.rep("    ", #blockquote_stack) .. "</blockquote>")
+            table.remove(blockquote_stack)
+        end
+
+        -- Open new blockquote levels
+        while #blockquote_stack < depth do
+            table.insert(result, string.rep("    ", #blockquote_stack) .. "<blockquote>")
+            table.insert(blockquote_stack, true)
+        end
+
+        -- Add content inside the deepest blockquote
+        table.insert(result, string.rep("    ", #blockquote_stack) .. "<p>" .. content .. "</p>")
+        i = i + 1
+    end
+
+    -- Close remaining open blockquotes
+    while #blockquote_stack > 0 do
+        table.insert(result, string.rep("    ", #blockquote_stack) .. "</blockquote>")
+        table.remove(blockquote_stack)
+    end
+
+    return result, i
+end
+
 local function markdown_to_html(markdown)
     local body_lines = {}
     local lines = {}
@@ -106,6 +147,12 @@ local function markdown_to_html(markdown)
         elseif line:match("^%-[%s]+") then
             local ul_block, next_index = parse_unordered_list(lines, i)
             for _, l in ipairs(ul_block) do
+                table.insert(body_lines, l)
+            end
+            i = next_index
+        elseif line:match("^>+") then
+            local bq_block, next_index = parse_blockquotes(lines, i)
+            for _, l in ipairs(bq_block) do
                 table.insert(body_lines, l)
             end
             i = next_index
