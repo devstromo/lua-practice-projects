@@ -19,9 +19,9 @@ local function markdown_to_html(markdown)
         local converted = line
 
         -- Headers
-        converted = converted:gsub("^#%s*(.+)", "<h1>%1</h1>")
-        converted = converted:gsub("^##%s*(.+)", "<h2>%1</h2>")
         converted = converted:gsub("^###%s*(.+)", "<h3>%1</h3>")
+        converted = converted:gsub("^##%s*(.+)", "<h2>%1</h2>")
+        converted = converted:gsub("^#%s*(.+)", "<h1>%1</h1>")
 
         -- Bold
         converted = converted:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
