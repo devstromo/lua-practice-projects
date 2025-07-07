@@ -14,11 +14,11 @@ end
 -- ✅ Determine indent level
 local indent_level = tonumber(cli_args.indent)
 if not indent_level or indent_level < 1 or indent_level > 10 then
-    indent_level = 1
+    indent_level = 4
 end
 
-local indent_unit = string.rep(" ", indent_level * 4)
-print(string.format("Indentation set to %d x 4 = %d spaces.", indent_level, indent_level * 4))
+local indent_unit = string.rep(" ", indent_level)
+print(string.format("Indentation set to %d spaces.", indent_level))
 
 local function parse_inline_formatting(text)
     text = text:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
