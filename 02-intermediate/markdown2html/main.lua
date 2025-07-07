@@ -34,7 +34,7 @@ local function parse_ordered_list(lines, start_index)
         local line = lines[i]
         local list_item = line:match("^%d+%.%s+(.+)")
         if not list_item then
-            break -- exit list parsing
+            break
         end
 
         list_item = parse_inline_formatting(list_item)
@@ -60,6 +60,27 @@ local function parse_ordered_list(lines, start_index)
     return result, i
 end
 
+local function parse_unordered_list(lines, start_index)
+    local result = {}
+    local i = start_index
+    table.insert(result, "        <ul>")
+
+    while i <= #lines do
+        local line = lines[i]
+        local list_item = line:match("^%-[%s]+(.+)")
+        if not list_item then
+            break
+        end
+
+        list_item = parse_inline_formatting(list_item)
+        table.insert(result, "            <li>" .. list_item .. "</li>")
+        i = i + 1
+    end
+
+    table.insert(result, "        </ul>")
+    return result, i
+end
+
 local function parse_paragraph(line)
     line = parse_inline_formatting(line)
     return "    <p>" .. line .. "</p>"
@@ -75,11 +96,15 @@ local function markdown_to_html(markdown)
     local i = 1
     while i <= #lines do
         local line = lines[i]
-        local list_item = line:match("^%d+%.%s+(.+)")
-
-        if list_item then
+        if line:match("^%d+%.%s+") then
             local list_block, next_index = parse_ordered_list(lines, i)
             for _, l in ipairs(list_block) do
+                table.insert(body_lines, l)
+            end
+            i = next_index
+        elseif line:match("^%-[%s]+") then
+            local ul_block, next_index = parse_unordered_list(lines, i)
+            for _, l in ipairs(ul_block) do
                 table.insert(body_lines, l)
             end
             i = next_index
