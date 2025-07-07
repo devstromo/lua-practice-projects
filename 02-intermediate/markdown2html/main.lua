@@ -11,12 +11,62 @@ for _, arg_str in ipairs(arg or {}) do
     end
 end
 
+local function parse_inline_formatting(text)
+    text = text:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
+    text = text:gsub("%*(.-)%*", "<em>%1</em>")
+    text = text:gsub("`(.-)`", "<code>%1</code>")
+    return text
+end
+
+local function parse_headers(line)
+    line = line:gsub("^###%s*(.+)", "<h3>%1</h3>")
+    line = line:gsub("^##%s*(.+)", "<h2>%1</h2>")
+    line = line:gsub("^#%s*(.+)", "<h1>%1</h1>")
+    return line
+end
+
+local function parse_ordered_list(lines, start_index)
+    local result = {}
+    local i = start_index
+    table.insert(result, "        <ol>")
+
+    while i <= #lines do
+        local line = lines[i]
+        local list_item = line:match("^%d+%.%s+(.+)")
+        if not list_item then
+            break -- exit list parsing
+        end
+
+        list_item = parse_inline_formatting(list_item)
+        table.insert(result, "            <li>" .. list_item)
+
+        -- Check for indented continuation lines
+        i = i + 1
+        while i <= #lines do
+            local next_line = lines[i]
+            if next_line:match("^%s") and not next_line:match("^%d+%.%s+") then
+                local para = parse_inline_formatting(next_line)
+                table.insert(result, "                <p>" .. para .. "</p>")
+                i = i + 1
+            else
+                break
+            end
+        end
+
+        table.insert(result, "            </li>")
+    end
+
+    table.insert(result, "        </ol>")
+    return result, i
+end
+
+local function parse_paragraph(line)
+    line = parse_inline_formatting(line)
+    return "    <p>" .. line .. "</p>"
+end
+
 local function markdown_to_html(markdown)
     local body_lines = {}
-    local indent = "    "
-    local in_ol = false
-    local inside_li = false
-
     local lines = {}
     for line in markdown:gmatch("[^\r\n]+") do
         table.insert(lines, line)
@@ -25,76 +75,26 @@ local function markdown_to_html(markdown)
     local i = 1
     while i <= #lines do
         local line = lines[i]
-        local converted = line
-
-        -- Check for ordered list item
         local list_item = line:match("^%d+%.%s+(.+)")
+
         if list_item then
-            -- Start <ol> if not already
-            if not in_ol then
-                table.insert(body_lines, indent .. "<ol>")
-                in_ol = true
+            local list_block, next_index = parse_ordered_list(lines, i)
+            for _, l in ipairs(list_block) do
+                table.insert(body_lines, l)
             end
-
-            -- Process formatting in list item
-            list_item = list_item:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
-            list_item = list_item:gsub("%*(.-)%*", "<em>%1</em>")
-            list_item = list_item:gsub("`(.-)`", "<code>%1</code>")
-
-            table.insert(body_lines, indent .. indent .. "<li>" .. list_item)
-
-            inside_li = true
-            i = i + 1
-
-            -- Check following indented lines as part of this list item
-            while i <= #lines do
-                local next_line = lines[i]
-                if next_line:match("^%s") and not next_line:match("^%d+%.%s+") then
-                    -- Format next_line and append as paragraph within <li>
-                    local para = next_line:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
-                    para = para:gsub("%*(.-)%*", "<em>%1</em>")
-                    para = para:gsub("`(.-)`", "<code>%1</code>")
-                    table.insert(body_lines, indent .. indent .. indent .. "<p>" .. para .. "</p>")
-                    i = i + 1
-                else
-                    break
-                end
-            end
-
-            table.insert(body_lines, indent .. indent .. "</li>") -- Close <li> after paragraphs
-            inside_li = false
-
+            i = next_index
         else
-            -- Close </ol> if we leave list block
-            if in_ol then
-                table.insert(body_lines, indent .. "</ol>")
-                in_ol = false
+            local header = parse_headers(line)
+            if header == line then
+                table.insert(body_lines, parse_paragraph(line))
+            else
+                table.insert(body_lines, "    " .. header)
             end
-
-            -- Process as normal paragraph or header
-            converted = converted:gsub("^###%s*(.+)", "<h3>%1</h3>")
-            converted = converted:gsub("^##%s*(.+)", "<h2>%1</h2>")
-            converted = converted:gsub("^#%s*(.+)", "<h1>%1</h1>")
-
-            converted = converted:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
-            converted = converted:gsub("%*(.-)%*", "<em>%1</em>")
-            converted = converted:gsub("`(.-)`", "<code>%1</code>")
-
-            if not (converted:match("^<h[1-3]>")) then
-                converted = "<p>" .. converted .. "</p>"
-            end
-
-            table.insert(body_lines, indent .. converted)
             i = i + 1
         end
     end
 
-    -- Close open <ol> if still open
-    if in_ol then
-        table.insert(body_lines, indent .. "</ol>")
-    end
-
-    -- Build final HTML
+    -- Wrap with HTML structure
     local html = [[
 <!DOCTYPE html>
 <html lang="en">
