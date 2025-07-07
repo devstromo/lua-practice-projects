@@ -183,7 +183,7 @@ local function markdown_to_html(markdown)
     </style>
 </head>
 <body>
-]] .. table.concat(body_lines, "\n") .. [[
+]] .. table.concat(body_lines, "\n") .. "\n" .. [[
 </body>
 </html>
 ]]
