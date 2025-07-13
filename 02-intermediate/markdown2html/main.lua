@@ -20,6 +20,41 @@ end
 local indent_unit = string.rep(" ", indent_level)
 print(string.format("Indentation set to %d spaces.", indent_level))
 
+local function langDefinition()
+    -- ISO 639-1 valid language codes (basic subset)
+    local valid_langs = {
+        en = true,
+        es = true,
+        fr = true,
+        de = true,
+        it = true,
+        pt = true,
+        zh = true,
+        ja = true,
+        ko = true,
+        ru = true,
+        ar = true,
+        nl = true,
+        sv = true,
+        no = true,
+        da = true,
+        fi = true,
+        pl = true,
+        tr = true
+    }
+
+    local lang = "en"
+    if cli_args.lang then
+        local input_lang = cli_args.lang:lower()
+        if valid_langs[input_lang] then
+            lang = input_lang
+        else
+            print("Warning: Invalid language code '" .. input_lang .. "'. Defaulting to 'en'.")
+        end
+    end
+    return lang
+end
+
 local function parse_inline_formatting(text)
     text = text:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
     text = text:gsub("%*(.-)%*", "<em>%1</em>")
@@ -147,11 +182,8 @@ local function build_html_document(body_lines)
     local function indent(level)
         return string.rep(indent_unit, level)
     end
+    local lang = langDefinition()
 
-    local lang = "en" -- Default language
-    if cli_args.lang then
-        lang = cli_args.lang
-    end
     table.insert(html_lines, "<!DOCTYPE html>")
     table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
