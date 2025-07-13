@@ -55,6 +55,31 @@ local function langDefinition()
     return lang
 end
 
+local function charsetDefinition()
+    local valid_charsets = {
+        ["UTF-8"] = true,
+        ["ISO-8859-1"] = true,
+        ["windows-1252"] = true,
+        ["UTF-16"] = true,
+        ["US-ASCII"] = true,
+        ["Shift_JIS"] = true,
+        ["GB2312"] = true,
+        ["Big5"] = true,
+        ["EUC-KR"] = true
+    }
+
+    local charset = "UTF-8"
+    if cli_args.charset then
+        local input_charset = cli_args.charset
+        if valid_charsets[input_charset] then
+            charset = input_charset
+        else
+            print("Warning: Invalid charset '" .. input_charset .. "'. Defaulting to UTF-8.")
+        end
+    end
+    return charset
+end
+
 local function parse_inline_formatting(text)
     text = text:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
     text = text:gsub("%*(.-)%*", "<em>%1</em>")
@@ -184,10 +209,11 @@ local function build_html_document(body_lines)
     end
     local lang = langDefinition()
 
+    local charset = charsetDefinition()
     table.insert(html_lines, "<!DOCTYPE html>")
     table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
-    table.insert(html_lines, indent(2) .. "<meta charset=\"UTF-8\">")
+    table.insert(html_lines, indent(2) .. "<meta charset=\"" .. charset .. "\">")
     table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
     table.insert(html_lines, indent(2) .. "<style>")
     table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
@@ -301,3 +327,4 @@ print("Output file:", cli_args.output or "output.html")
 local source_file = source_file or "input.md"
 local output_file = cli_args.output or "output.html"
 convert_markdown_to_html(source_file, output_file)
+-- TODO: ADD meta tags definition to the output HTML
