@@ -148,8 +148,12 @@ local function build_html_document(body_lines)
         return string.rep(indent_unit, level)
     end
 
+    local lang = "en" -- Default language
+    if cli_args.lang then
+        lang = cli_args.lang
+    end
     table.insert(html_lines, "<!DOCTYPE html>")
-    table.insert(html_lines, "<html lang=\"en\">")
+    table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
     table.insert(html_lines, indent(2) .. "<meta charset=\"UTF-8\">")
     table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
