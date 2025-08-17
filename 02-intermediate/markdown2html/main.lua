@@ -55,6 +55,14 @@ local function langDefinition()
     return lang
 end
 
+local function descriptionDefinition()
+    local description = "Markdown to HTML Converter"
+    if cli_args.description then
+        description = cli_args.description
+    end
+    return description
+end
+
 local function charsetDefinition()
     local valid_charsets = {
         ["UTF-8"] = true,
@@ -210,10 +218,12 @@ local function build_html_document(body_lines)
     local lang = langDefinition()
 
     local charset = charsetDefinition()
+    local description = descriptionDefinition()
     table.insert(html_lines, "<!DOCTYPE html>")
     table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
     table.insert(html_lines, indent(2) .. "<meta charset=\"" .. charset .. "\">")
+    table.insert(html_lines, indent(2) .. "<meta name=\"description\" content=\"" .. description .. "\">")
     table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
     table.insert(html_lines, indent(2) .. "<style>")
     table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
@@ -327,4 +337,3 @@ print("Output file:", cli_args.output or "output.html")
 local source_file = source_file or "input.md"
 local output_file = cli_args.output or "output.html"
 convert_markdown_to_html(source_file, output_file)
--- TODO: ADD meta tags definition to the output HTML
