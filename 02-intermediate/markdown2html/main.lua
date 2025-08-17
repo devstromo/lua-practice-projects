@@ -104,6 +104,14 @@ local function authorDefinition()
     return author
 end
 
+local function viewportDefinition()
+    local viewport = "width=device-width, initial-scale=1.0"
+    if cli_args.viewport then
+        viewport = cli_args.viewport
+    end
+    return viewport
+end
+
 local function parse_inline_formatting(text)
     text = text:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
     text = text:gsub("%*(.-)%*", "<em>%1</em>")
@@ -237,6 +245,7 @@ local function build_html_document(body_lines)
     local description = descriptionDefinition()
     local keywords = keywordsDefinition()
     local author = authorDefinition()
+    local viewport = viewportDefinition()
     table.insert(html_lines, "<!DOCTYPE html>")
     table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
@@ -244,6 +253,7 @@ local function build_html_document(body_lines)
     table.insert(html_lines, indent(2) .. "<meta name=\"description\" content=\"" .. description .. "\">")
     table.insert(html_lines, indent(2) .. "<meta name=\"keywords\" content=\"" .. keywords .. "\">")
     table.insert(html_lines, indent(2) .. "<meta name=\"author\" content=\"" .. author .. "\">")
+    table.insert(html_lines, indent(2) .. "<meta name=\"viewport\" content=\"" .. viewport .. "\">")
     table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
     table.insert(html_lines, indent(2) .. "<style>")
     table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
