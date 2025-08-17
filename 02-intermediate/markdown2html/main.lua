@@ -20,7 +20,7 @@ end
 local indent_unit = string.rep(" ", indent_level)
 print(string.format("Indentation set to %d spaces.", indent_level))
 
-local function langDefinition()
+local function lang_definition()
     -- ISO 639-1 valid language codes (basic subset)
     local valid_langs = {
         en = true,
@@ -55,7 +55,7 @@ local function langDefinition()
     return lang
 end
 
-local function descriptionDefinition()
+local function description_definition()
     local description = "Markdown to HTML Converter"
     if cli_args.description then
         description = cli_args.description
@@ -63,7 +63,7 @@ local function descriptionDefinition()
     return description
 end
 
-local function keywordsDefinition()
+local function keywords_definition()
     local keywords = "markdown, html, converter"
     if cli_args.keywords then
         keywords = cli_args.keywords
@@ -71,7 +71,7 @@ local function keywordsDefinition()
     return keywords
 end
 
-local function charsetDefinition()
+local function charset_definition()
     local valid_charsets = {
         ["UTF-8"] = true,
         ["ISO-8859-1"] = true,
@@ -96,7 +96,7 @@ local function charsetDefinition()
     return charset
 end
 
-local function authorDefinition()
+local function author_definition()
     local author = "Unknown Author"
     if cli_args.author then
         author = cli_args.author
@@ -104,7 +104,7 @@ local function authorDefinition()
     return author
 end
 
-local function viewportDefinition()
+local function viewport_definition()
     local viewport = "width=device-width, initial-scale=1.0"
     if cli_args.viewport then
         viewport = cli_args.viewport
@@ -239,13 +239,13 @@ local function build_html_document(body_lines)
     local function indent(level)
         return string.rep(indent_unit, level)
     end
-    local lang = langDefinition()
+    local lang = lang_definition()
 
-    local charset = charsetDefinition()
-    local description = descriptionDefinition()
-    local keywords = keywordsDefinition()
-    local author = authorDefinition()
-    local viewport = viewportDefinition()
+    local charset = charset_definition()
+    local description = description_definition()
+    local keywords = keywords_definition()
+    local author = author_definition()
+    local viewport = viewport_definition()
     table.insert(html_lines, "<!DOCTYPE html>")
     table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
