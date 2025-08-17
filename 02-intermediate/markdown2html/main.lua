@@ -96,6 +96,14 @@ local function charsetDefinition()
     return charset
 end
 
+local function authorDefinition()
+    local author = "Unknown Author"
+    if cli_args.author then
+        author = cli_args.author
+    end
+    return author
+end
+
 local function parse_inline_formatting(text)
     text = text:gsub("%*%*(.-)%*%*", "<strong>%1</strong>")
     text = text:gsub("%*(.-)%*", "<em>%1</em>")
@@ -228,12 +236,14 @@ local function build_html_document(body_lines)
     local charset = charsetDefinition()
     local description = descriptionDefinition()
     local keywords = keywordsDefinition()
+    local author = authorDefinition()
     table.insert(html_lines, "<!DOCTYPE html>")
     table.insert(html_lines, "<html lang=\"" .. lang .. "\">")
     table.insert(html_lines, indent(1) .. "<head>")
     table.insert(html_lines, indent(2) .. "<meta charset=\"" .. charset .. "\">")
     table.insert(html_lines, indent(2) .. "<meta name=\"description\" content=\"" .. description .. "\">")
     table.insert(html_lines, indent(2) .. "<meta name=\"keywords\" content=\"" .. keywords .. "\">")
+    table.insert(html_lines, indent(2) .. "<meta name=\"author\" content=\"" .. author .. "\">")
     table.insert(html_lines, indent(2) .. "<title>Markdown Output</title>")
     table.insert(html_lines, indent(2) .. "<style>")
     table.insert(html_lines, indent(3) .. "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 40px; }")
